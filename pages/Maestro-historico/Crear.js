@@ -1,13 +1,12 @@
-import React from 'react'
+import React from "react";
+import Formulario from "../../components/maestroh/Formulario";
 
-const Formulario = () => {
+const Crear = () => {
   return (
-    <>Formulario
-    <div>
-      <input type="text" /><input type="text" /><input type="text" /><input type="text" /><input type="text" /><input type="text" /><input type="text" /><input type="text" /><input type="text" /><input type="text" /><input type="text" /><input type="text" /><input type="text" /><input type="text" /><input type="text" /><input type="text" /><input type="text" /><input type="text" /><input type="text" /><input type="text" />
-    </div>
+    <>
+      <Formulario />
     </>
-  )
-}
+  );
+};
 
-export default Formulario
+export default Crear;
