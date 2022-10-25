@@ -5,7 +5,7 @@ import TextField from "@mui/material/TextField";
 
 const Formulario = () => {
   return (
-    <>
+    <form>
       <FormGroup>
         <FormLabel>INFORMACIÓN BASICA DEL PROYECTO</FormLabel>
         <Box sx={{ "& > :not(style)": { m: 1 } }} noValidate autoComplete="off">
@@ -56,7 +56,7 @@ const Formulario = () => {
           <TextField label="Retenciones Y Descuentos Aplicados Por El Cliente (Sin Amortiacion De Anticipo)" />
         </Box>
       </FormGroup>
-    </>
+    </form>
   );
 };
 
