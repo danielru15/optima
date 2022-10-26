@@ -11,7 +11,7 @@ const index = () => {
     { field: "Consecutivo", headerName: "Consecutivo", type: "number" },
     { field: "Oferta", headerName: "Oferta", width: 100 },
     { field: "Linea de Negocio", headerName: "Linea de Negocio" },
-    { field: "Seudonimo", headerName: "Seudonimo", width: 200 },
+    { field: "Seudonimo", headerName: "Seudonimo", width: 100 },
     {
       field: "Nombre del proyecto",
       headerName: "Nombre del proyecto",
@@ -19,7 +19,7 @@ const index = () => {
       sortable: false,
       valueGetter: (params) =>
         `${params.row.firstName || ""} ${params.row.lastName || ""}`,
-      width: 200,
+      width: 140,
     },
     {
       field: "Descripcion Breve",
@@ -30,33 +30,30 @@ const index = () => {
         `${params.row.firstName || ""} ${params.row.lastName || ""}`,
       width: 200,
     },
-    { field: "Cliente Directo", headerName: "Cliente Directo", width: 200 },
-    { field: "Cliente Final", headerName: "Cliente Final", width: 200 },
-    { field: "Director", headerName: "Director", width: 200 },
-    { field: "Coordinador", headerName: "Coordinador", width: 200 },
-    { field: "Contrato", headerName: "Contrato", width: 200 },
+    { field: "Cliente Directo", headerName: "Cliente Directo", width: 130 },
+    { field: "Cliente Final", headerName: "Cliente Final", width: 130 },
+    { field: "Director", headerName: "Director", width: 100 },
+    { field: "Coordinador", headerName: "Coordinador", width: 100 },
+    { field: "Contrato", headerName: "Contrato", width: 130 },
     {
       field: "Fecha Inicio Contractual",
       headerName: "Fecha Inicio Contractual",
-      width: 200,
     },
     {
       field: "Fecha Terminación Contractual",
       headerName: "Fecha Terminación Contractual",
-      width: 200,
     },
-    { field: "Plazo Dias", headerName: "Plazo Dias", width: 200 },
+    { field: "Plazo Dias", headerName: "Plazo Dias" },
     { field: "Fecha Inicio Real", headerName: "Fecha Inicio Real", width: 200 },
     {
       field: "Fecha Terminación Real",
       headerName: "Fecha Terminación Real",
       width: 200,
     },
-    { field: "Plazo Dias", headerName: "Plazo Dias", width: 200 },
+    { field: "Plazo Dias", headerName: "Plazo Dias" },
     {
       field: "Participación Optima",
       headerName: "Participación Optima",
-      width: 200,
     },
     {
       field: "Valor Contratado sin IVA",

@@ -1,16 +1,25 @@
 import React from "react";
+import { useRouter } from "next/router";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import { FormGroup, FormLabel } from "@mui/material";
 import TextField from "@mui/material/TextField";
 
 const Formulario = () => {
+  const router = useRouter();
   return (
     <form>
       <FormGroup>
         <FormLabel>INFORMACIÓN BASICA DEL PROYECTO</FormLabel>
         <Box sx={{ "& > :not(style)": { m: 1 } }} noValidate autoComplete="off">
-          <TextField label="Contratado" />
-          <TextField label="Ejecutado En" />
+          <TextField
+            label="Contratado"
+            onChange={(e) => console.log(e.target.value)}
+          />
+          <TextField
+            label="Ejecutado En"
+            onChange={(e) => console.log(e.target.value)}
+          />
           <TextField label="Nombre" />
           <TextField label="Seudonimo" />
           <TextField label="Oferta" />
@@ -56,6 +65,11 @@ const Formulario = () => {
           <TextField label="Retenciones Y Descuentos Aplicados Por El Cliente (Sin Amortiacion De Anticipo)" />
         </Box>
       </FormGroup>
+      <br />
+      <Button variant="contained">Crear</Button>
+      <Button onClick={() => router.push("/Maestro-historico")}>
+        Cancelar
+      </Button>
     </form>
   );
 };
