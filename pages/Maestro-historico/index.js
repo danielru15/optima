@@ -10,7 +10,7 @@ const index = () => {
     { field: "Ejecutado En", headerName: "Ejecutado En", width: 100 },
     { field: "Consecutivo", headerName: "Consecutivo", type: "number" },
     { field: "Oferta", headerName: "Oferta", width: 100 },
-    { field: "Linea de Negocio", headerName: "Linea de Negocio", width: 200 },
+    { field: "Linea de Negocio", headerName: "Linea de Negocio" },
     { field: "Seudonimo", headerName: "Seudonimo", width: 200 },
     {
       field: "Nombre del proyecto",
