@@ -6,36 +6,169 @@ import { DataGrid } from "@mui/x-data-grid";
 const index = () => {
   const router = useRouter();
   const columns = [
-    { field: "id", headerName: "ID" },
-    { field: "firstName", headerName: "First name" },
-    { field: "lastName", headerName: "Last name" },
+    { field: "Contratado", headerName: "Contratado", width: 100 },
+    { field: "Ejecutado En", headerName: "Ejecutado En", width: 100 },
+    { field: "Consecutivo", headerName: "Consecutivo", type: "number" },
+    { field: "Oferta", headerName: "Oferta", width: 100 },
+    { field: "Linea de Negocio", headerName: "Linea de Negocio", width: 200 },
+    { field: "Seudonimo", headerName: "Seudonimo", width: 200 },
     {
-      field: "age",
-      headerName: "Age",
-      type: "number",
-    },
-    {
-      field: "fullName",
-      headerName: "Full name",
+      field: "Nombre del proyecto",
+      headerName: "Nombre del proyecto",
       description: "This column has a value getter and is not sortable.",
       sortable: false,
       valueGetter: (params) =>
         `${params.row.firstName || ""} ${params.row.lastName || ""}`,
       width: 200,
     },
+    {
+      field: "Descripcion Breve",
+      headerName: "Descripcion Breve",
+      description: "This column has a value getter and is not sortable.",
+      sortable: false,
+      valueGetter: (params) =>
+        `${params.row.firstName || ""} ${params.row.lastName || ""}`,
+      width: 200,
+    },
+    { field: "Cliente Directo", headerName: "Cliente Directo", width: 200 },
+    { field: "Cliente Final", headerName: "Cliente Final", width: 200 },
+    { field: "Director", headerName: "Director", width: 200 },
+    { field: "Coordinador", headerName: "Coordinador", width: 200 },
+    { field: "Contrato", headerName: "Contrato", width: 200 },
+    {
+      field: "Fecha Inicio Contractual",
+      headerName: "Fecha Inicio Contractual",
+      width: 200,
+    },
+    {
+      field: "Fecha Terminación Contractual",
+      headerName: "Fecha Terminación Contractual",
+      width: 200,
+    },
+    { field: "Plazo Dias", headerName: "Plazo Dias", width: 200 },
+    { field: "Fecha Inicio Real", headerName: "Fecha Inicio Real", width: 200 },
+    {
+      field: "Fecha Terminación Real",
+      headerName: "Fecha Terminación Real",
+      width: 200,
+    },
+    { field: "Plazo Dias", headerName: "Plazo Dias", width: 200 },
+    {
+      field: "Participación Optima",
+      headerName: "Participación Optima",
+      width: 200,
+    },
+    {
+      field: "Valor Contratado sin IVA",
+      headerName: "Valor Contratado sin IVA",
+      width: 200,
+    },
+    { field: "OTROSI 1", headerName: "OTROSI 1", width: 200 },
+    { field: "OTROSI 2", headerName: "OTROSI 2", width: 200 },
+    { field: "OTROSI 3", headerName: "OTROSI 3", width: 200 },
+    { field: "OTROSI 4", headerName: "OTROSI 4", width: 200 },
+    { field: "OTROSI 5", headerName: "OTROSI 5", width: 200 },
+    { field: "OTROSI 6", headerName: "OTROSI 6", width: 200 },
+    { field: "OTROSI 7", headerName: "OTROSI 7", width: 200 },
+    { field: "OTROSI 8", headerName: "OTROSI 8", width: 200 },
+    { field: "OTROSI 9", headerName: "OTROSI 9", width: 200 },
+    { field: "OTROSI 10", headerName: "OTROSI 10", width: 200 },
+    { field: "OTROSI 11", headerName: "OTROSI 11", width: 200 },
+    { field: "OTROSI 12", headerName: "OTROSI 12", width: 200 },
+    {
+      field: "Valor Total Contratado sin IVA",
+      headerName: "Valor Total Contratado sin IVA",
+      width: 200,
+    },
+    { field: "PCO", headerName: "PCO", width: 200 },
+    { field: "Administración", headerName: "Administración", width: 200 },
+    { field: "Imprevistos", headerName: "Imprevistos", width: 200 },
+    { field: "Utilidad Bruta", headerName: "Utilidad Bruta", width: 200 },
+    {
+      field: "% Anticipo Contractual",
+      headerName: "% Anticipo Contractual",
+      width: 200,
+    },
+    {
+      field: "Valor Anticipo Contractual",
+      headerName: "valor Anticipo Contractual",
+      width: 200,
+    },
+    {
+      field: "ANTICIPOS PAGADOS POR EL CLIENTE",
+      headerName: "ANTICIPOS PAGADOS POR EL CLIENTE",
+      width: 200,
+    },
+    {
+      field: "Valor Total Facturado Sin IVA",
+      headerName: "Valor Total Facturado Sin IVA",
+      width: 200,
+    },
+    {
+      field: "IVA",
+      headerName: "IVA",
+      width: 200,
+    },
+    {
+      field: "% Retegantia",
+      headerName: "% Retegantia",
+      width: 200,
+    },
+    {
+      field: "Valor Retegantia",
+      headerName: "Valor Retegantia",
+      width: 200,
+    },
+    {
+      field: "Valor Pendiente Ejecutar o Facturar",
+      headerName: "Valor Pendiente Ejecutar o Facturar",
+      width: 200,
+    },
+    {
+      field: "Neto Ingresado Al Banco",
+      headerName: "Neto Ingresado Al Banco",
+      width: 200,
+    },
+    {
+      field: "Valor Anticipo Amortizado Por El Cliente",
+      headerName: "Valor Anticipo Amortizado Por El Cliente",
+      width: 200,
+    },
+    {
+      field: "Saldo Anticipo Por Amortizar",
+      headerName: "Saldo Anticipo Por Amortizar",
+      width: 200,
+    },
+    {
+      field:
+        "VALOR RETENCIONES Y DESCUENTOS APLICADOS POR EL CLIENTE (SIN AMORTIZACIÓN DE ANTICIPO)",
+      headerName:
+        "VALOR RETENCIONES Y DESCUENTOS APLICADOS POR EL CLIENTE (SIN AMORTIZACIÓN DE ANTICIPO)",
+      width: 200,
+    },
+    {
+      field: "Neto Facturas Pendientes de pago",
+      headerName: "Neto Facturas Pendientes de pago",
+      width: 200,
+    },
+    {
+      field: "Valor anticipo Pendientes de pago",
+      headerName: "valor anticipo Pendientes de pago",
+      width: 200,
+    },
+    {
+      field: "Relación Facturado / Contratado",
+      headerName: "Relación Facturado / Contratado",
+      width: 200,
+    },
+    {
+      field: "Estado Contractual",
+      headerName: "Estado Contractual",
+      width: 200,
+    },
   ];
 
-  const rows = [
-    { id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
-    { id: 2, lastName: "Lannister", firstName: "Cersei", age: 42 },
-    { id: 3, lastName: "Lannister", firstName: "Jaime", age: 45 },
-    { id: 4, lastName: "Stark", firstName: "Arya", age: 16 },
-    { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-    { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
-    { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-    { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-    { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
-  ];
+  const registros = [];
   return (
     <>
       <p>Maestro Historico</p>
@@ -48,10 +181,10 @@ const index = () => {
       <br />
       <div style={{ height: 500, width: "100%" }}>
         <DataGrid
-          rows={rows}
+          rows={registros}
           columns={columns}
           pageSize={7}
-          rowsPerPageOptions={[5]}
+          rowsPerPageOptions={[7]}
         />
       </div>
     </>
