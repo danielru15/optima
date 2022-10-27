@@ -16,8 +16,9 @@ const Formulario = () => {
 
   const agregar = (e) => {
     e.preventDefault();
-    SetCrearDatos(datos, ...crearDatos);
+    SetCrearDatos(...crearDatos, datos);
   };
+
   useEffect(() => {
     console.log(crearDatos);
   }),
