@@ -1,9 +1,15 @@
-import Layout from '../components/layout/Layout'
-import '../styles/globals.css'
+import Layout from "../components/layout/Layout";
+import { Maestro } from "../context/datosContext";
+import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
-  
-  return <Layout><Component {...pageProps} /> </Layout>
+  return (
+    <Maestro>
+      <Layout>
+        <Component {...pageProps} />{" "}
+      </Layout>
+    </Maestro>
+  );
 }
 
-export default MyApp
+export default MyApp;
