@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import {useContext} from 'react'
+import { DatosContext } from "../../Context/datosContext"
 import { useRouter } from "next/router";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -6,26 +8,21 @@ import { FormGroup, FormLabel } from "@mui/material";
 import TextField from "@mui/material/TextField";
 
 const Formulario = () => {
+  const {Contratado, setContratado, CrearDatos} = useContext(DatosContext)
   const router = useRouter();
-  const [datos, setDatos] = useState("");
-  const [crearDatos, SetCrearDatos] = useState([""]);
+
 
   const handleChange = (e) => {
-    setDatos(e.target.value);
+    setContratado(e.target.value)
   };
 
-  const agregar = (e) => {
-    e.preventDefault();
-    SetCrearDatos(...crearDatos, datos);
-  };
-
-  useEffect(() => {
-    console.log(crearDatos);
-  }),
-    [];
-
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    console.log(Contratado)
+    CrearDatos(Contratado)
+  }
   return (
-    <form onSubmit={agregar}>
+    <form  onSubmit={handleSubmit}>
       <FormGroup>
         <FormLabel>INFORMACION DEL PROYECTO</FormLabel>
         <Box sx={{ "& > :not(style)": { m: 1 } }} noValidate autoComplete="off">
@@ -35,107 +32,107 @@ const Formulario = () => {
           <TextField label="Linea de Negocio" onChange={handleChange} />
           <TextField
             label="Descripcion breve"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="Cliente directo"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="Cliente final"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="Director"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="Coordinador"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="Contrato"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="Participacion OPTIMA"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="Valor contrato sin IVA"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="IVA"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="OTROSI 1"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="OTROSI 2"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="OTROSI 3"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="OTROSI 4"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="OTROSI 5"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="OTROSI 6"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="OTROSI 7"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="OTROSI 8"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="OTROSI 9"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="OTROSI 10"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="OTROSI 11"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="OTROSI 12"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="PCO"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="Administración"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="Imprevistos"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="Utilidad Bruta"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
           <TextField
             label="% ANTICIPO CONTRACTUAL"
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange} 
           />
         </Box>
       </FormGroup>

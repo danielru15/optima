@@ -1,14 +1,14 @@
 import Layout from "../components/layout/Layout";
-import { Maestro } from "../context/datosContext";
+import { DatosProvider } from "../Context/datosContext";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <Maestro>
+    <DatosProvider>
       <Layout>
         <Component {...pageProps} />{" "}
       </Layout>
-    </Maestro>
+    </DatosProvider>
   );
 }
 

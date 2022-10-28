@@ -1,9 +1,14 @@
+import {useContext} from 'react'
+import { DatosContext } from "../../Context/datosContext"
 import { useRouter } from "next/router";
 import Button from "@mui/material/Button";
 import React from "react";
 import { DataGrid } from "@mui/x-data-grid";
 
 const index = () => {
+  const {datosMaestro} = useContext(DatosContext)
+  console.log(datosMaestro)
+  
   const router = useRouter();
   const columns = [
     { field: "Contratado", headerName: "Contratado", width: 100 },
