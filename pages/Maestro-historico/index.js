@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import React from "react";
 import { DataGrid } from "@mui/x-data-grid";
 
-const index = () => {
+const Index = () => {
  
   const router = useRouter();
   const columns = [
@@ -191,4 +191,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;
