@@ -143,7 +143,7 @@ export const DatosProvider = ({ children }) => {
       RetencionesYDescuentos:formatodivisa.format(Number(RetencionesYDescuentos)),
       FacturacionPendientedePago:formatodivisa.format(Facturacion_Pendiente_Pago),
       AnticiposPendientesDePago:formatodivisa.format(Number((Number(PorcentAnticipoContractural/100) * Number(ValorContratoSinIVA)) - Number(AnticiposPagadosxElCliente))),
-      RelacionFacturadoContratado:formatodivisa.format(Number((Number(ValorTotalFacturadoSinIVA) / Number(Valor_Total_Contratado) )*100))
+      RelacionFacturadoContratado:Number((Number(ValorTotalFacturadoSinIVA) / Number(Valor_Total_Contratado) )*100),
         /*
         Contratado:Contratado,
       Ejecutado:Ejecutado,
@@ -207,6 +207,10 @@ export const DatosProvider = ({ children }) => {
     }
     
   }
+  // Editar
+
+
+  // Borrar
 
   // Mostrar Datos
   useEffect(() => {
@@ -218,6 +222,7 @@ export const DatosProvider = ({ children }) => {
       })))
     })
   },[])
+  
   return (
     <DatosContext.Provider value={{
       User,
