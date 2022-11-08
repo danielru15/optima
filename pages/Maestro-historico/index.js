@@ -1,24 +1,44 @@
 import Layout from "../../components/layout/Layout";
-import {useContext} from 'react'
+import {useContext, useState} from 'react'
 import { DatosContext } from "../../Context/datosContext"
 import { useRouter } from "next/router";
 import Button from "@mui/material/Button";
 import React from "react";
-import { DataGrid, GridToolbar, } from '@mui/x-data-grid';
+import Paper from '@mui/material/Paper';
+import TextField from "@mui/material/TextField";
+import { TableContainer, Table , TableHead,TableRow, TableCell, TableBody, TableFooter, TablePagination } from '@mui/material';
+
 
 const Index = () => {
   const router = useRouter();
-  const {datosMaestro} = useContext(DatosContext)
+  const [Search, setSearch] = useState('')
+  const {datosMaestro,Eliminar} = useContext(DatosContext)
+  let datos = []
   console.log(datosMaestro)
 
+  const Searcher = (e) => {
+    setSearch(e.target.value)
+  }
+
+  if (!Search) {
+    datos = datosMaestro
+  }else {
+    datos = datosMaestro.filter((dato) => dato.Seudonimo.toLowerCase().includes(Search.toLocaleLowerCase())) 
+  }
+  const tableStyling = {
+    padding:"0 10px",
+    position:"sticky",
+  }
+  
   const columns = [
-    {field: "Contratado", headerName: "Contratado", width: 100 },
-    {field: "Ejecutado", headerName: "Ejecutado En", width: 100 },
-    {field: "Consecutivo", headerName: "Consecutivo", type: "number" },
-    {field: "Oferta", headerName: "Oferta", width: 400 },
-    {field: "LineaNegocio", headerName: "Linea de Negocio" , width: 200, },
-    {field: "Seudonimo", headerName: "Seudonimo", width: 600 },
-    {field: "Nombre",headerName: "Nombre del proyecto",width: 900,},
+    {headerName: "Acciones", width:200},
+    {headerName: "Contratado", width:100},
+    {headerName: "Ejecutado En"},
+    {headerName: "Consecutivo"},
+    {headerName: "Oferta", width:200},
+    {headerName: "Linea de Negocio"},
+    {headerName: "Seudonimo", width:300},
+    {headerName: "Nombre del proyecto", width:800},
     {field: "DescripcionBreve", headerName: "Descripcion Breve",width: 900,},
     {field: "ClienteDirecto", headerName: "Cliente Directo", width: 300 },
     {field: "ContactoCliente", headerName: "Contacto Cliente", width: 300 },
@@ -28,8 +48,10 @@ const Index = () => {
     {field: "Contrato", headerName: "Contrato", width: 300 },
     {field: "FechaInicioContractual",headerName: "Fecha Inicio Contractual",width: 300,},
     {field: "FechaFinalContractual", headerName: "Fecha Terminación Contractual",width: 300,},
+    {headerName:"Plazo Contractual", width:200},
     {field: "FechaInicioReal", headerName: "Fecha Inicio Real", width: 300 },
     {field: "FechaFinalReal",headerName: "Fecha Terminación Real",width: 300,},
+    {headerName:"Plazo Real", width:200},
     {field: "ParticipacionOPTIMA", headerName: "Participación Optima",width: 200,},
     {field: "ValorContratoSinIVA", headerName: "Valor Contratado sin IVA",width: 200,},
     {field: "IVA", headerName: "IVA",width: 100, },
@@ -62,20 +84,11 @@ const Index = () => {
     {field: "FacturasPagadsPorElCliente",headerName: "Neto Ingresado Al Banco",width: 300,},
     {field: "AnticipoAmortizadoPorElCliente",headerName: "Valor Anticipo Amortizado Por El Cliente",width: 300,},
     {field: "SaldoAnticipoPorAmortizar",headerName: "Saldo Anticipo Por Amortizar",width: 300,},
-    {field:"RetencionesYDescuentos", headerName:"VALOR RETENCIONES Y DESCUENTOS APLICADOS POR EL CLIENTE (SIN AMORTIZACIÓN DE ANTICIPO)",width: 300,},
+    {field:"RetencionesYDescuentos", headerName:"VALOR RETENCIONES Y DESCUENTOS APLICADOS POR EL CLIENTE (SIN AMORTIZACIÓN DE ANTICIPO)"},
     {field: "FacturacionPendientedePago", headerName: "Neto Facturas Pendientes de pago",width: 300,},
     {field: "AnticiposPendientesDePago",headerName: "valor anticipo Pendientes de pago",width: 300,},
     {field: "RelacionFacturadoContratado",headerName: "Relación Facturado / Contratado",width: 200,},
-    {field: "Estado",headerName: "Estado",width: 200},
-    {
-      field: "click",
-      headerName: "Click",
-      width: 90,
-      renderCell: (params) => {
-         // you will find row info in params
-         <button>Click</button>
-      }
-    },
+    {headerName: "Estado"},
   ]
 
   return (
@@ -88,15 +101,94 @@ const Index = () => {
         Crear
       </Button>
       <br />
+      <TextField fullWidth margin="dense"  value={Search} onChange={Searcher} label="Buscar" />
+      <br />
       <div style={{ height: 500, width: "100%" }}>
-        <DataGrid
-          rows={datosMaestro}
-          columns={columns}
-          pageSize={7}
-          rowsPerPageOptions={[7]}
-
-        />
-        
+      <TableContainer >
+        <Table sx={{width:"max-content"}} aria-label="simple table">
+          <TableHead >
+            <TableRow>
+              {
+                columns.map(c => (
+                  <TableCell sx={{...tableStyling, width:(c.width)}}  key={c.headerName} >{c.headerName}</TableCell>
+                ))
+              } 
+            </TableRow>
+          </TableHead>
+          <TableBody sx={{width:"max-content"}}>
+          
+            {
+              datos.map(dato => (
+                <TableRow key={dato.id}>
+                <TableCell ><Button variant="contained" size="small" color="success" onClick={() => router.push(`/Maestro-historico/${dato.id}`)}>Editar</Button><Button onClick={() => Eliminar(dato.id)} size="small" variant="contained" color="error">Eliminar</Button></TableCell>
+                <TableCell>{dato.Contratado}</TableCell>
+                <TableCell>{dato.Ejecutado}</TableCell>
+                <TableCell>{dato.Consecutivo}</TableCell>
+                <TableCell>{dato.Oferta}</TableCell>
+                <TableCell>{dato.LineaNegocio}</TableCell>
+                <TableCell style={{
+                        position: 'sticky',
+                        left: 0,
+                        background: 'white',
+                        zIndex: 800,
+                    }}>{dato.Seudonimo}</TableCell>
+                <TableCell>{dato.Nombre}</TableCell>
+                <TableCell>{dato.DescripcionBreve}</TableCell>
+                <TableCell>{dato.ClienteDirecto}</TableCell>
+                <TableCell>{dato.ContactoCliente}</TableCell>
+                <TableCell>{dato.ClienteFinal}</TableCell>
+                <TableCell>{dato.Director}</TableCell>
+                <TableCell>{dato.Coordinador}</TableCell>
+                <TableCell>{dato.Contrato}</TableCell>
+                <TableCell>{dato.FechaInicioContractual}</TableCell>
+                <TableCell>{dato.FechaFinalContractual}</TableCell>
+                <TableCell>{dato.PlazoContractual}</TableCell>
+                <TableCell>{dato.FechaInicioReal}</TableCell>
+                <TableCell>{dato.FechaFinalReal}</TableCell>
+                <TableCell>{dato.PlazoReal}</TableCell>
+                <TableCell>{dato.ParticipacionOPTIMA}</TableCell>
+                <TableCell>{dato.ValorContratoSinIVA}</TableCell>
+                <TableCell>{dato.IVA}</TableCell>
+                <TableCell>{dato.OTROSSI1}</TableCell>
+                <TableCell>{dato.OTROSSI2}</TableCell>
+                <TableCell>{dato.OTROSSI3}</TableCell>
+                <TableCell>{dato.OTROSSI4}</TableCell>
+                <TableCell>{dato.OTROSSI5}</TableCell>
+                <TableCell>{dato.OTROSSI6}</TableCell>
+                <TableCell>{dato.OTROSSI7}</TableCell>
+                <TableCell>{dato.OTROSSI8}</TableCell>
+                <TableCell>{dato.OTROSSI9}</TableCell>
+                <TableCell>{dato.OTROSSI10}</TableCell>
+                <TableCell>{dato.OTROSSI11}</TableCell>
+                <TableCell>{dato.OTROSSI12}</TableCell>
+                <TableCell>{dato.TotalOtrossi}</TableCell>
+                <TableCell>{dato.ValorTotalContratado}</TableCell>
+                <TableCell>{dato.PCO}</TableCell>
+                <TableCell>{dato.Administracion}</TableCell>
+                <TableCell>{dato.Imprevistos}</TableCell>
+                <TableCell>{dato.UtilidadBruta}</TableCell>
+                <TableCell>{dato.PorcentAnticipoContractural}</TableCell>
+                <TableCell>{dato.AnticipoContractual}</TableCell>
+                <TableCell>{dato.AnticiposPagadosxElCliente}</TableCell>
+                <TableCell>{dato.ValorTotalFacturadoSinIVA}</TableCell>
+                <TableCell>{dato.IVAFacturado}</TableCell>
+                <TableCell>{dato.RetegantiaPorcent}</TableCell>
+                <TableCell>{dato.ValorReteGantia}</TableCell>
+                <TableCell>{dato.ValorPendientePorFacturarSinIVA}</TableCell>
+                <TableCell>{dato.FacturasPagadsPorElCliente}</TableCell>
+                <TableCell>{dato.AnticipoAmortizadoPorElCliente}</TableCell>
+                <TableCell>{dato.SaldoAnticipoPorAmortizar}</TableCell>
+                <TableCell>{dato.RetencionesYDescuentos}</TableCell>
+                <TableCell>{dato.FacturacionPendientedePago}</TableCell>
+                <TableCell>{dato.AnticiposPendientesDePago}</TableCell>
+                <TableCell>{dato.RelacionFacturadoContratado}</TableCell>
+                <TableCell>{dato.Estado}</TableCell>
+                </TableRow>
+              ))
+            }
+          </TableBody>
+        </Table>
+      </TableContainer>
       </div>
     </Layout>
   );

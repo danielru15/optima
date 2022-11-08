@@ -38,6 +38,9 @@
 .En-curso {
   background-color: cadetblue;
 }
+.aa {
+  width: 600px !important;
+}
 @media screen and (max-height: 450px) {
   .sidenav {padding-top: 15px;}
   .sidenav a {font-size: 18px;}

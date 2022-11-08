@@ -1,8 +1,10 @@
 import { createContext, useState, useEffect} from "react";
+import Alert from '@mui/material/Alert';
 export { useContext } from "react";
 import { auth, db} from '../firebase'
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
-import { collection,onSnapshot, orderBy, query,addDoc, Timestamp,doc, getDocs} from "firebase/firestore";
+import { collection,onSnapshot, orderBy, query,addDoc, Timestamp,doc, getDocs,updateDoc,deleteDoc} from "firebase/firestore";
+import moment from "moment/moment";
 
 export const DatosContext = createContext();
 
@@ -88,6 +90,8 @@ export const DatosProvider = ({ children }) => {
     let Saldo_Anticipo_por_Amortizar = Number((AnticiposPagadosxElCliente) - (AnticipoAmortizadoPorElCliente))
     let Iva_Facturado = Number(0.19 * Number(ValorTotalFacturadoSinIVA))
     let Facturacion_Pendiente_Pago = Number(Number(ValorTotalFacturadoSinIVA) + Number(Iva_Facturado)) - Number((RetencionesYDescuentos)) - Number(FacturasPagadsPorElCliente) - Number((AnticiposPagadosxElCliente) - Number(Saldo_Anticipo_por_Amortizar))
+    let Plazo_Contractual = moment(FechafC).diff(moment(FechaiC,),'days')
+    let Plazo_Real = moment(FechafR).diff(moment(FechaiR,),'days')
     try {
       await addDoc(collection(db, 'MaestroHistoricO'), {
         Contratado:Contratado,
@@ -106,8 +110,10 @@ export const DatosProvider = ({ children }) => {
       Contrato:Contrato,
       FechaInicioContractual:FechaiC,
       FechaFinalContractual:FechafC,
+      PlazoContractual:Plazo_Contractual,
       FechaInicioReal:FechaiR,
       FechaFinalReal:FechafR,
+      PlazoReal:Plazo_Real,
       ParticipacionOPTIMA:(Number(ParticipacionOPTIMA)),
       ValorContratoSinIVA:formatodivisa.format(Number(ValorContratoSinIVA)),
       IVA:formatodivisa.format(Number((0.19 * Number(ValorContratoSinIVA)))),
@@ -208,13 +214,87 @@ export const DatosProvider = ({ children }) => {
     
   }
   // Editar
-
-
+  const Actualizar = async (id) => {
+    let Total_otrossi = Number((Number(OTROSSI1)+Number(OTROSSI2)+Number(OTROSSI3)+Number(OTROSSI4)+Number(OTROSSI5)+Number(OTROSSI6)+Number(OTROSSI7)+Number(OTROSSI8)+Number(OTROSSI9)+Number(OTROSSI10)+Number(OTROSSI11)+Number(OTROSSI12)))
+    let Valor_Total_Contratado = Number(ValorContratoSinIVA) + Number(Total_otrossi)
+    let Saldo_Anticipo_por_Amortizar = Number((AnticiposPagadosxElCliente) - (AnticipoAmortizadoPorElCliente))
+    let Iva_Facturado = Number(0.19 * Number(ValorTotalFacturadoSinIVA))
+    let Facturacion_Pendiente_Pago = Number(Number(ValorTotalFacturadoSinIVA) + Number(Iva_Facturado)) - Number((RetencionesYDescuentos)) - Number(FacturasPagadsPorElCliente) - Number((AnticiposPagadosxElCliente) - Number(Saldo_Anticipo_por_Amortizar))
+    const taskDocRef = doc(db, 'MaestroHistoricO', id)
+    try{
+      await updateDoc(taskDocRef, {
+        Contratado:Contratado,
+        Ejecutado:Ejecutado,
+        Consecutivo:Number(Consecutivo),
+        Oferta:Oferta,
+        LineaNegocio:LineaNegocio,
+        Seudonimo:Seudonimo,
+        Nombre:Nombre,
+        DescripcionBreve:DescripcionBreve,
+        ClienteDirecto:ClienteDirecto,
+        ContactoCliente:ContactoCliente,
+        ClienteFinal:ClienteFinal,
+        Director:Director,
+        Coordinador:Coordinador,
+        Contrato:Contrato,
+        FechaInicioContractual:FechaiC,
+        FechaFinalContractual:FechafC,
+        FechaInicioReal:FechaiR,
+        FechaFinalReal:FechafR,
+        ParticipacionOPTIMA:(Number(ParticipacionOPTIMA)),
+        ValorContratoSinIVA:formatodivisa.format(Number(ValorContratoSinIVA)),
+        IVA:formatodivisa.format(Number((0.19 * Number(ValorContratoSinIVA)))),
+        OTROSSI1:formatodivisa.format(Number(OTROSSI1)),
+        OTROSSI2:formatodivisa.format(Number(OTROSSI2)),
+        OTROSSI3:formatodivisa.format(Number(OTROSSI3)),
+        OTROSSI4:formatodivisa.format(Number(OTROSSI4)),
+        OTROSSI5:formatodivisa.format(Number(OTROSSI5)),
+        OTROSSI6:formatodivisa.format(Number(OTROSSI6)),
+        OTROSSI7:formatodivisa.format(Number(OTROSSI7)),
+        OTROSSI8:formatodivisa.format(Number(OTROSSI8)),
+        OTROSSI9:formatodivisa.format(Number(OTROSSI9)),
+        OTROSSI10:formatodivisa.format(Number(OTROSSI10)),
+        OTROSSI11:formatodivisa.format(Number(OTROSSI11)),
+        OTROSSI12:formatodivisa.format(Number(OTROSSI12)),
+        TotalOtrossi:formatodivisa.format(Number((Number(OTROSSI1)+Number(OTROSSI2)+Number(OTROSSI3)+Number(OTROSSI4)+Number(OTROSSI5)+Number(OTROSSI6)+Number(OTROSSI7)+Number(OTROSSI8)+Number(OTROSSI9)+Number(OTROSSI10)+Number(OTROSSI11)+Number(OTROSSI12)))),
+        ValorTotalContratado:formatodivisa.format(Valor_Total_Contratado),
+        PCO:formatodivisa.format(Number(PCO)),
+        Administracion:formatodivisa.format(Number(Administracion)),
+        Imprevistos:formatodivisa.format(Number(Imprevistos)),
+        UtilidadBruta:formatodivisa.format(Number(UtilidadBruta)),
+        PorcentAnticipoContractural:(Number(PorcentAnticipoContractural)),
+        AnticipoContractual:formatodivisa.format((Number(PorcentAnticipoContractural /100) * Number(ValorContratoSinIVA))),
+        AnticiposPagadosxElCliente:formatodivisa.format(Number(AnticiposPagadosxElCliente)),
+        ValorTotalFacturadoSinIVA:formatodivisa.format(Number(ValorTotalFacturadoSinIVA)),
+        IVAFacturado:formatodivisa.format(Number(0.19 * Number(ValorTotalFacturadoSinIVA))),
+        RetegantiaPorcent:Number(RetegantiaPorcent),
+        ValorReteGantia: formatodivisa.format(Number((Number(RetegantiaPorcent/100) * Number(ValorTotalFacturadoSinIVA)))),
+        ValorPendientePorFacturarSinIVA:formatodivisa.format(Number(Valor_Total_Contratado - ValorTotalFacturadoSinIVA)),
+        FacturasPagadsPorElCliente:formatodivisa.format(Number(FacturasPagadsPorElCliente)),
+        AnticipoAmortizadoPorElCliente:formatodivisa.format(Number(AnticipoAmortizadoPorElCliente)),
+        SaldoAnticipoPorAmortizar:formatodivisa.format(Number(Saldo_Anticipo_por_Amortizar)),
+        RetencionesYDescuentos:formatodivisa.format(Number(RetencionesYDescuentos)),
+        FacturacionPendientedePago:formatodivisa.format(Facturacion_Pendiente_Pago),
+        AnticiposPendientesDePago:formatodivisa.format(Number((Number(PorcentAnticipoContractural/100) * Number(ValorContratoSinIVA)) - Number(AnticiposPagadosxElCliente))),
+        RelacionFacturadoContratado:Number((Number(ValorTotalFacturadoSinIVA) / Number(Valor_Total_Contratado) )*100),
+      })
+    } catch (err) {
+      alert(err)
+    }    
+  }
   // Borrar
+  const Eliminar = async (id) => {
+    const taskDocRef = doc(db, 'MaestroHistoricO', id)
+    try{
+      await deleteDoc(taskDocRef)
+    } catch (err) {
+      alert(err)
+    }
+  }
 
   // Mostrar Datos
   useEffect(() => {
-    const q = query(collection(db, 'MaestroHistoricO'))
+    const q = query(collection(db, 'MaestroHistoricO'),orderBy("Consecutivo" , "asc"), orderBy("Seudonimo", "asc" ), )
     onSnapshot(q, (querySnapshot) => {
       setDatosMaestro(querySnapshot.docs.map(doc => ({
         id: doc.id,
@@ -222,9 +302,11 @@ export const DatosProvider = ({ children }) => {
       })))
     })
   },[])
-  
+
   return (
     <DatosContext.Provider value={{
+      Eliminar,
+      Actualizar,
       User,
       login,
       logout,
@@ -276,7 +358,48 @@ export const DatosProvider = ({ children }) => {
       setFechafC,
       setFechafR,
       setFechaiR,
-      setConsecutivo
+      setConsecutivo,
+      OTROSSI1,
+      OTROSSI2,
+      OTROSSI3,
+      OTROSSI4,
+      OTROSSI5,
+      OTROSSI6,
+      OTROSSI7,
+      OTROSSI8,
+      OTROSSI9,
+      OTROSSI10,
+      OTROSSI11,
+      OTROSSI12,
+      ValorContratoSinIVA,
+      ParticipacionOPTIMA,
+      Contrato,
+      Coordinador,
+      Director,
+      ClienteFinal,
+      ClienteDirecto,
+      DescripcionBreve,
+      LineaNegocio,
+      Oferta,
+      Seudonimo,
+      ContactoCliente,
+      FechaiC,
+      FechafC,
+      FechafR,
+      FechaiR,
+      Consecutivo,
+      PCO,
+      Administracion,
+      Imprevistos,
+      UtilidadBruta,
+      PorcentAnticipoContractural,
+      AnticiposPagadosxElCliente,
+      ValorTotalFacturadoSinIVA,
+      RetegantiaPorcent,
+      FacturasPagadsPorElCliente,
+      AnticipoAmortizadoPorElCliente,
+      RetencionesYDescuentos,
+      
 
        }}>
       {children}
