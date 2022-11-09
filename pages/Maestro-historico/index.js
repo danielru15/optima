@@ -12,7 +12,7 @@ import { TableContainer, Table , TableHead,TableRow, TableCell, TableBody, Table
 const Index = () => {
   const router = useRouter();
   const [Search, setSearch] = useState('')
-  const {datosMaestro,Eliminar} = useContext(DatosContext)
+  const {datosMaestro,Eliminar,formatodivisa} = useContext(DatosContext)
   let datos = []
   console.log(datosMaestro)
 
@@ -147,41 +147,41 @@ const Index = () => {
                 <TableCell>{dato.FechaFinalReal}</TableCell>
                 <TableCell>{dato.PlazoReal}</TableCell>
                 <TableCell>{dato.ParticipacionOPTIMA}</TableCell>
-                <TableCell>{dato.ValorContratoSinIVA}</TableCell>
-                <TableCell>{dato.IVA}</TableCell>
-                <TableCell>{dato.OTROSSI1}</TableCell>
-                <TableCell>{dato.OTROSSI2}</TableCell>
-                <TableCell>{dato.OTROSSI3}</TableCell>
-                <TableCell>{dato.OTROSSI4}</TableCell>
-                <TableCell>{dato.OTROSSI5}</TableCell>
-                <TableCell>{dato.OTROSSI6}</TableCell>
-                <TableCell>{dato.OTROSSI7}</TableCell>
-                <TableCell>{dato.OTROSSI8}</TableCell>
-                <TableCell>{dato.OTROSSI9}</TableCell>
-                <TableCell>{dato.OTROSSI10}</TableCell>
-                <TableCell>{dato.OTROSSI11}</TableCell>
-                <TableCell>{dato.OTROSSI12}</TableCell>
-                <TableCell>{dato.TotalOtrossi}</TableCell>
-                <TableCell>{dato.ValorTotalContratado}</TableCell>
-                <TableCell>{dato.PCO}</TableCell>
-                <TableCell>{dato.Administracion}</TableCell>
-                <TableCell>{dato.Imprevistos}</TableCell>
-                <TableCell>{dato.UtilidadBruta}</TableCell>
+                <TableCell>{formatodivisa.format(dato.ValorContratoSinIVA)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.IVA)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.OTROSSI1)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.OTROSSI2)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.OTROSSI3)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.OTROSSI4)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.OTROSSI5)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.OTROSSI6)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.OTROSSI7)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.OTROSSI8)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.OTROSSI9)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.OTROSSI10)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.OTROSSI11)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.OTROSSI12)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.TotalOtrossi)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.ValorTotalContratado)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.PCO)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.Administracion)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.Imprevistos)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.UtilidadBruta)}</TableCell>
                 <TableCell>{dato.PorcentAnticipoContractural}</TableCell>
-                <TableCell>{dato.AnticipoContractual}</TableCell>
-                <TableCell>{dato.AnticiposPagadosxElCliente}</TableCell>
-                <TableCell>{dato.ValorTotalFacturadoSinIVA}</TableCell>
-                <TableCell>{dato.IVAFacturado}</TableCell>
+                <TableCell>{formatodivisa.format(dato.AnticipoContractual)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.AnticiposPagadosxElCliente)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.ValorTotalFacturadoSinIVA)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.IVAFacturado)}</TableCell>
                 <TableCell>{dato.RetegantiaPorcent}</TableCell>
-                <TableCell>{dato.ValorReteGantia}</TableCell>
-                <TableCell>{dato.ValorPendientePorFacturarSinIVA}</TableCell>
-                <TableCell>{dato.FacturasPagadsPorElCliente}</TableCell>
-                <TableCell>{dato.AnticipoAmortizadoPorElCliente}</TableCell>
-                <TableCell>{dato.SaldoAnticipoPorAmortizar}</TableCell>
-                <TableCell>{dato.RetencionesYDescuentos}</TableCell>
-                <TableCell>{dato.FacturacionPendientedePago}</TableCell>
-                <TableCell>{dato.AnticiposPendientesDePago}</TableCell>
-                <TableCell>{dato.RelacionFacturadoContratado}</TableCell>
+                <TableCell>{formatodivisa.format(dato.ValorReteGantia)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.ValorPendientePorFacturarSinIVA)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.FacturasPagadsPorElCliente)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.AnticipoAmortizadoPorElCliente)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.SaldoAnticipoPorAmortizar)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.RetencionesYDescuentos)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.FacturacionPendientedePago)}</TableCell>
+                <TableCell>{formatodivisa.format(dato.AnticiposPendientesDePago)}</TableCell>
+                <TableCell>{Math.round(dato.RelacionFacturadoContratado)}</TableCell>
                 <TableCell>{dato.Estado}</TableCell>
                 </TableRow>
               ))
