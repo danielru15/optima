@@ -27,7 +27,6 @@ const Index = () => {
   }
   const tableStyling = {
     padding:"0 10px",
-    position:"sticky",
   }
   
   const columns = [
@@ -167,12 +166,12 @@ const Index = () => {
                 <TableCell>{formatodivisa.format(dato.Administracion)}</TableCell>
                 <TableCell>{formatodivisa.format(dato.Imprevistos)}</TableCell>
                 <TableCell>{formatodivisa.format(dato.UtilidadBruta)}</TableCell>
-                <TableCell>{dato.PorcentAnticipoContractural}</TableCell>
+                <TableCell>{`${dato.PorcentAnticipoContractural}%`}</TableCell>
                 <TableCell>{formatodivisa.format(dato.AnticipoContractual)}</TableCell>
                 <TableCell>{formatodivisa.format(dato.AnticiposPagadosxElCliente)}</TableCell>
                 <TableCell>{formatodivisa.format(dato.ValorTotalFacturadoSinIVA)}</TableCell>
                 <TableCell>{formatodivisa.format(dato.IVAFacturado)}</TableCell>
-                <TableCell>{dato.RetegantiaPorcent}</TableCell>
+                <TableCell>{`${dato.RetegantiaPorcent}%`}</TableCell>
                 <TableCell>{formatodivisa.format(dato.ValorReteGantia)}</TableCell>
                 <TableCell>{formatodivisa.format(dato.ValorPendientePorFacturarSinIVA)}</TableCell>
                 <TableCell>{formatodivisa.format(dato.FacturasPagadsPorElCliente)}</TableCell>
@@ -181,7 +180,7 @@ const Index = () => {
                 <TableCell>{formatodivisa.format(dato.RetencionesYDescuentos)}</TableCell>
                 <TableCell>{formatodivisa.format(dato.FacturacionPendientedePago)}</TableCell>
                 <TableCell>{formatodivisa.format(dato.AnticiposPendientesDePago)}</TableCell>
-                <TableCell>{Math.round(dato.RelacionFacturadoContratado)}</TableCell>
+                <TableCell>{`${Math.round(dato.RelacionFacturadoContratado)}%`}</TableCell>
                 <TableCell>{dato.Estado}</TableCell>
                 </TableRow>
               ))

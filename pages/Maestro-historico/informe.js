@@ -1,11 +1,17 @@
-import { Card, CardContent, Grid, Typography } from '@mui/material'
+import { Button, Card, CardContent, Grid,  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, Box, InputLabel, FormLabel, FormControl, Select, MenuItem } from '@mui/material'
 import {useContext, useState} from 'react'
 import { DatosContext } from "../../Context/datosContext"
 import Layout from '../../components/layout/Layout'
+import { lineHeight } from '@mui/system'
 
 
 const Informe = () => {
   const {datosMaestro,formatodivisa} = useContext(DatosContext)
+
+  let Linea = []
+  const Categoria = [...new Set(datosMaestro.map((Val) => Val.LineaNegocio))];
+
+
   // valores Totales
   let Total_Contratado = datosMaestro.reduce(
     (sum, value) => typeof value.ValorTotalContratado === "number"? sum + value.ValorTotalContratado: sum, 0);
@@ -112,6 +118,81 @@ const Informe = () => {
 
         </Grid>
       </Grid>
+      <form type="submit">
+        <FormLabel>Filtrar</FormLabel>
+
+        <FormControl>
+        <InputLabel>Linea Negocio</InputLabel>
+        <Select
+          label="Linea Negocio"
+        >
+         {
+          Categoria.map((c,i) => (
+            <MenuItem  key={i} value={c}>{c}</MenuItem>
+          ))
+         }
+        </Select>
+        </FormControl>
+        <TextField 
+        type="date"
+        />
+        <TextField 
+        type="date"
+        />
+        <TextField 
+        type="date"
+        />
+        <TextField 
+        type="date"
+        />
+        <Button variant="contained" color='success' >Filtrar</Button>
+      </form>
+      <TableContainer >
+        <Table sx={{width:"max-content"}} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell style={{
+                        position: 'sticky',
+                        left: 0,
+                        background: 'white',
+                        zIndex: 800,
+                    }}>Seudonimo</TableCell>
+              <TableCell>Linea Negocio</TableCell>
+              <TableCell>Total Contratado</TableCell>
+              <TableCell>Total Facturado</TableCell>
+              <TableCell>Total Ingresado</TableCell>
+              <TableCell>Total pendiente facturar</TableCell>
+              <TableCell>Total Anticipos</TableCell>
+              <TableCell>Total Anticpos pagados</TableCell>
+              <TableCell>Total Anticipo por amortizar</TableCell>
+              <TableCell>Total Anticipos pendientes de pago</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+              {
+                datosMaestro.map(dato => (
+                  <TableRow key={dato.id}>
+                    <TableCell style={{
+                        position: 'sticky',
+                        left: 0,
+                        background: 'white',
+                        zIndex: 800,
+                    }}>{dato.Seudonimo}</TableCell>
+                    <TableCell>{dato.LineaNegocio}</TableCell>
+                    <TableCell>{formatodivisa.format(dato.ValorTotalContratado)}</TableCell>
+                    <TableCell>{formatodivisa.format(dato.ValorTotalFacturadoSinIVA)}</TableCell>
+                    <TableCell>{formatodivisa.format(dato.FacturasPagadsPorElCliente)}</TableCell>
+                    <TableCell>{formatodivisa.format(dato.FacturacionPendientedePago)}</TableCell>
+                    <TableCell>{formatodivisa.format(dato.AnticipoContractual)}</TableCell>
+                    <TableCell>{formatodivisa.format(dato.AnticiposPagadosxElCliente)}</TableCell>
+                    <TableCell>{formatodivisa.format(dato.SaldoAnticipoPorAmortizar)}</TableCell>
+                    <TableCell>{formatodivisa.format(dato.AnticiposPendientesDePago)}</TableCell>
+                  </TableRow>
+                ))
+              }
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Layout>
   )
 }

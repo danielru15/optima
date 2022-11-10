@@ -222,6 +222,8 @@ export const DatosProvider = ({ children }) => {
     let Saldo_Anticipo_por_Amortizar = Number((AnticiposPagadosxElCliente) - (AnticipoAmortizadoPorElCliente))
     let Iva_Facturado = Number(0.19 * Number(ValorTotalFacturadoSinIVA))
     let Facturacion_Pendiente_Pago = Number(Number(ValorTotalFacturadoSinIVA) + Number(Iva_Facturado)) - Number((RetencionesYDescuentos)) - Number(FacturasPagadsPorElCliente) - Number((AnticiposPagadosxElCliente) - Number(Saldo_Anticipo_por_Amortizar))
+    let Plazo_Contractual = moment(FechafC).diff(moment(FechaiC,),'days')
+    let Plazo_Real = moment(FechafR).diff(moment(FechaiR,),'days')
     const taskDocRef = doc(db, 'MaestroHistoricO', id)
     try{
       await updateDoc(taskDocRef, {
