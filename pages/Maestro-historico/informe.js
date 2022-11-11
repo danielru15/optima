@@ -3,13 +3,38 @@ import {useContext, useState} from 'react'
 import { DatosContext } from "../../Context/datosContext"
 import Layout from '../../components/layout/Layout'
 import { lineHeight } from '@mui/system'
+import { useRef } from 'react'
 
 
 const Informe = () => {
   const {datosMaestro,formatodivisa} = useContext(DatosContext)
-
-  let Linea = []
+  const [Linea, setLinea] = useState('')
+  const [FechaInicioC, setFechaInicioC] = useState('')
+  const [FechaInicioR, setFechaInicioR] = useState('')
+  const [FechaFinC, setFechaFinC] = useState('')
+  const [FechaFinR, setFechaFinR] = useState('')
+  const [Filtrado, setFiltrado] = useState([])
+  const first = useRef()
   const Categoria = [...new Set(datosMaestro.map((Val) => Val.LineaNegocio))];
+  let filtro = []
+//Function filtro
+
+const filtrar = () => {
+  if(Linea !== '' || FechaInicioC !== '' ||  FechaInicioR !== '' || FechaFinR !== '' ||  FechaFinC !== '' ) {
+    filtro = datosMaestro.filter((d) => d.LineaNegocio === Linea || d.FechaInicioContractual === FechaInicioC || d.FechaFinalContractual === FechaFinC || d.FechaInicioReal === FechaInicioR || d.FechaFinalReal === FechaFinR )
+  }else if (Linea !== '' &&  FechaInicioC !== '' && FechaInicioR !== '' && FechaFinR !== '' && FechaFinC !== '' ){
+    filtro = datosMaestro.filter((d) => d.LineaNegocio === Linea && d.FechaInicioContractual === FechaInicioC && d.FechaFinalContractual === FechaFinC && d.FechaInicioReal === FechaInicioR && d.FechaFinalReal === FechaFinR )
+  }else if (Linea !== '' && FechaInicioC !== '' &&  FechaInicioR === '' && FechaFinR === '' &&  FechaFinC !== '' ){
+    filtro = datosMaestro.filter((d) => d.LineaNegocio === Linea && d.FechaInicioContractual === FechaInicioC && d.FechaFinalContractual === FechaFinC )
+  }else if(Linea !== '' && FechaInicioC === '' &&  FechaInicioR !== '' && FechaFinR !== '' &&  FechaFinC === '' ){
+    filtro = datosMaestro.filter((d) => d.LineaNegocio === Linea && d.FechaInicioReal === FechaInicioR && d.FechaFinalReal === FechaFinR  )
+  }else {
+    filtro = datosMaestro.filter((d) => d.FechaInicioContractual === FechaInicioC && d.FechaFinalContractual === FechaFinC && d.FechaInicioReal === FechaInicioR && d.FechaFinalReal === FechaFinR )
+  }
+  first.current.reset()
+  console.log(filtro)
+}
+
 
 
   // valores Totales
@@ -118,13 +143,15 @@ const Informe = () => {
 
         </Grid>
       </Grid>
-      <form type="submit">
+      <form type="submit" ref={first}>
         <FormLabel>Filtrar</FormLabel>
 
         <FormControl>
         <InputLabel>Linea Negocio</InputLabel>
         <Select
           label="Linea Negocio"
+          value={Linea}
+          onChange={e => setLinea(e.target.value)}
         >
          {
           Categoria.map((c,i) => (
@@ -135,17 +162,22 @@ const Informe = () => {
         </FormControl>
         <TextField 
         type="date"
+        onChange={e => setFechaInicioC(e.target.value)}
+        />
+        
+        <TextField 
+        type="date"
+        onChange={e => setFechaFinC(e.target.value)}
         />
         <TextField 
         type="date"
+        onChange={e => setFechaInicioR(e.target.value)}
         />
         <TextField 
         type="date"
+        onChange={e => setFechaFinR(e.target.value)}
         />
-        <TextField 
-        type="date"
-        />
-        <Button variant="contained" color='success' >Filtrar</Button>
+        <Button variant="contained" color='success' onClick={filtrar} >Filtrar</Button>
       </form>
       <TableContainer >
         <Table sx={{width:"max-content"}} aria-label="simple table">
