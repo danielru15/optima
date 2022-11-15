@@ -158,7 +158,7 @@ Consecutivo,
     CrearDatos(Contratado)
     }else {
       Actualizar(id)
-      push('/')
+      push('/Maestro-historico')
     }
   }
 

@@ -1,5 +1,5 @@
 import { Button, Card, CardContent, Grid,  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, Box, InputLabel, FormLabel, FormControl, Select, MenuItem } from '@mui/material'
-import {useContext, useState} from 'react'
+import {useContext, useEffect, useState} from 'react'
 import { DatosContext } from "../../Context/datosContext"
 import Layout from '../../components/layout/Layout'
 import { lineHeight } from '@mui/system'
@@ -10,57 +10,55 @@ const Informe = () => {
   const {datosMaestro,formatodivisa} = useContext(DatosContext)
   const [Linea, setLinea] = useState('')
   const [FechaInicioC, setFechaInicioC] = useState('')
-  const [FechaInicioR, setFechaInicioR] = useState('')
   const [FechaFinC, setFechaFinC] = useState('')
-  const [FechaFinR, setFechaFinR] = useState('')
-  const [Filtrado, setFiltrado] = useState([])
+  const [filtro, setFiltro] = useState()
   const first = useRef()
   const Categoria = [...new Set(datosMaestro.map((Val) => Val.LineaNegocio))];
-  let filtro = []
-//Function filtro
+  
 
-const filtrar = () => {
-  if(Linea !== '' || FechaInicioC !== '' ||  FechaInicioR !== '' || FechaFinR !== '' ||  FechaFinC !== '' ) {
-    filtro = datosMaestro.filter((d) => d.LineaNegocio === Linea || d.FechaInicioContractual === FechaInicioC || d.FechaFinalContractual === FechaFinC || d.FechaInicioReal === FechaInicioR || d.FechaFinalReal === FechaFinR )
-  }else if (Linea !== '' &&  FechaInicioC !== '' && FechaInicioR !== '' && FechaFinR !== '' && FechaFinC !== '' ){
-    filtro = datosMaestro.filter((d) => d.LineaNegocio === Linea && d.FechaInicioContractual === FechaInicioC && d.FechaFinalContractual === FechaFinC && d.FechaInicioReal === FechaInicioR && d.FechaFinalReal === FechaFinR )
-  }else if (Linea !== '' && FechaInicioC !== '' &&  FechaInicioR === '' && FechaFinR === '' &&  FechaFinC !== '' ){
-    filtro = datosMaestro.filter((d) => d.LineaNegocio === Linea && d.FechaInicioContractual === FechaInicioC && d.FechaFinalContractual === FechaFinC )
-  }else if(Linea !== '' && FechaInicioC === '' &&  FechaInicioR !== '' && FechaFinR !== '' &&  FechaFinC === '' ){
-    filtro = datosMaestro.filter((d) => d.LineaNegocio === Linea && d.FechaInicioReal === FechaInicioR && d.FechaFinalReal === FechaFinR  )
-  }else {
-    filtro = datosMaestro.filter((d) => d.FechaInicioContractual === FechaInicioC && d.FechaFinalContractual === FechaFinC && d.FechaInicioReal === FechaInicioR && d.FechaFinalReal === FechaFinR )
+  
+//Function filtro
+const filtrar = (e) => {
+  e.preventDefault()
+  if(Linea !== '' || FechaInicioC !== '' ||  FechaFinC !== '' ){
+    setFiltro(datosMaestro.filter((d) => d.LineaNegocio === Linea || FechaInicioC >= d.FechaInicioContractual  ))
+  }else if(Linea !== '' && FechaInicioC !== '') {
+    setFiltro(datosMaestro.filter((d) => d.LineaNegocio === Linea &&  FechaInicioC >= d.FechaInicioContractual ))
   }
-  first.current.reset()
-  console.log(filtro)
 }
 
-
-
   // valores Totales
-  let Total_Contratado = datosMaestro.reduce(
-    (sum, value) => typeof value.ValorTotalContratado === "number"? sum + value.ValorTotalContratado: sum, 0);
+  let Total_Contratado = filtro?filtro.reduce(
+    (sum, value) => typeof value.ValorTotalContratado === "number"? sum + value.ValorTotalContratado: sum, 0):datosMaestro.reduce(
+      (sum, value) => typeof value.ValorTotalContratado === "number"? sum + value.ValorTotalContratado: sum, 0)
     
-  let Total_Facturado = datosMaestro.reduce(
-    (sum, value) => typeof value.ValorTotalFacturadoSinIVA === "number" ? sum + value.ValorTotalFacturadoSinIVA : sum,0 );
+  let Total_Facturado = filtro?filtro.reduce(
+    (sum, value) => typeof value.ValorTotalFacturadoSinIVA === "number" ? sum + value.ValorTotalFacturadoSinIVA : sum,0 ):datosMaestro.reduce(
+      (sum, value) => typeof value.ValorTotalFacturadoSinIVA === "number" ? sum + value.ValorTotalFacturadoSinIVA : sum,0 )
 
-    let Neto_ingresado = datosMaestro.reduce(
-      (sum, value) => typeof value.FacturasPagadsPorElCliente === "number" ? sum + value.FacturasPagadsPorElCliente : sum,0 );
+    let Neto_ingresado = filtro?filtro.reduce(
+      (sum, value) => typeof value.FacturasPagadsPorElCliente === "number" ? sum + value.FacturasPagadsPorElCliente : sum,0 ):datosMaestro.reduce(
+        (sum, value) => typeof value.FacturasPagadsPorElCliente === "number" ? sum + value.FacturasPagadsPorElCliente : sum,0 )
 
-  let Pendiente_Facturar = datosMaestro.reduce(
-    (sum, value) => typeof value.ValorPendientePorFacturarSinIVA === "number" ? sum + value.ValorPendientePorFacturarSinIVA : sum,0 );
+  let Pendiente_Facturar = filtro?filtro.reduce(
+    (sum, value) => typeof value.ValorPendientePorFacturarSinIVA === "number" ? sum + value.ValorPendientePorFacturarSinIVA : sum,0 ):datosMaestro.reduce(
+      (sum, value) => typeof value.ValorPendientePorFacturarSinIVA === "number" ? sum + value.ValorPendientePorFacturarSinIVA : sum,0 )
   
-  let Total_Anticipos = datosMaestro.reduce(
-    (sum, value) => typeof value.AnticipoContractual === "number" ? sum + value.AnticipoContractual : sum,0 )
+  let Total_Anticipos = filtro?filtro.reduce(
+    (sum, value) => typeof value.AnticipoContractual === "number" ? sum + value.AnticipoContractual : sum,0 ):datosMaestro.reduce(
+      (sum, value) => typeof value.AnticipoContractual === "number" ? sum + value.AnticipoContractual : sum,0 )
 
-  let Total_Anticipos_Pagados = datosMaestro.reduce(
-    (sum, value) => typeof value.AnticiposPagadosxElCliente === "number" ? sum + value.AnticiposPagadosxElCliente : sum,0 )
+  let Total_Anticipos_Pagados = filtro?filtro.reduce(
+    (sum, value) => typeof value.AnticiposPagadosxElCliente === "number" ? sum + value.AnticiposPagadosxElCliente : sum,0 ):datosMaestro.reduce(
+      (sum, value) => typeof value.AnticiposPagadosxElCliente === "number" ? sum + value.AnticiposPagadosxElCliente : sum,0 )
   
-  let Total_AnticiposxAmortizar = datosMaestro.reduce(
-      (sum, value) => typeof value.SaldoAnticipoPorAmortizar === "number" ? sum + value.SaldoAnticipoPorAmortizar : sum,0 )
+  let Total_AnticiposxAmortizar = filtro?filtro.reduce(
+      (sum, value) => typeof value.SaldoAnticipoPorAmortizar === "number" ? sum + value.SaldoAnticipoPorAmortizar : sum,0 ):datosMaestro.reduce(
+        (sum, value) => typeof value.SaldoAnticipoPorAmortizar === "number" ? sum + value.SaldoAnticipoPorAmortizar : sum,0 )
 
-  let Anticipo_pendiente_pago = datosMaestro.reduce(
-  (sum, value) => typeof value.AnticiposPendientesDePago === "number" ? sum + value.AnticiposPendientesDePago : sum,0 )
+  let Anticipo_pendiente_pago = filtro?filtro.reduce(
+  (sum, value) => typeof value.AnticiposPendientesDePago === "number" ? sum + value.AnticiposPendientesDePago : sum,0 ):datosMaestro.reduce(
+    (sum, value) => typeof value.AnticiposPendientesDePago === "number" ? sum + value.AnticiposPendientesDePago : sum,0 )
   
   return (
     <Layout>
@@ -143,7 +141,7 @@ const filtrar = () => {
 
         </Grid>
       </Grid>
-      <form type="submit" ref={first}>
+      <form onSubmit={filtrar} >
         <FormLabel>Filtrar</FormLabel>
 
         <FormControl>
@@ -163,21 +161,16 @@ const filtrar = () => {
         <TextField 
         type="date"
         onChange={e => setFechaInicioC(e.target.value)}
+      
+        
         />
         
         <TextField 
         type="date"
         onChange={e => setFechaFinC(e.target.value)}
+    
         />
-        <TextField 
-        type="date"
-        onChange={e => setFechaInicioR(e.target.value)}
-        />
-        <TextField 
-        type="date"
-        onChange={e => setFechaFinR(e.target.value)}
-        />
-        <Button variant="contained" color='success' onClick={filtrar} >Filtrar</Button>
+        <Button variant="contained" color='success' type="submit" >Filtrar</Button>
       </form>
       <TableContainer >
         <Table sx={{width:"max-content"}} aria-label="simple table">
@@ -202,7 +195,7 @@ const filtrar = () => {
           </TableHead>
           <TableBody>
               {
-                datosMaestro.map(dato => (
+                filtro?filtro.map(dato => (
                   <TableRow key={dato.id}>
                     <TableCell style={{
                         position: 'sticky',
@@ -220,7 +213,30 @@ const filtrar = () => {
                     <TableCell>{formatodivisa.format(dato.SaldoAnticipoPorAmortizar)}</TableCell>
                     <TableCell>{formatodivisa.format(dato.AnticiposPendientesDePago)}</TableCell>
                   </TableRow>
-                ))
+                )):
+                <>
+                {
+                  datosMaestro.map(dato => (
+                    <TableRow key={dato.id}>
+                      <TableCell style={{
+                          position: 'sticky',
+                          left: 0,
+                          background: 'white',
+                          zIndex: 800,
+                      }}>{dato.Seudonimo}</TableCell>
+                      <TableCell>{dato.LineaNegocio}</TableCell>
+                      <TableCell>{formatodivisa.format(dato.ValorTotalContratado)}</TableCell>
+                      <TableCell>{formatodivisa.format(dato.ValorTotalFacturadoSinIVA)}</TableCell>
+                      <TableCell>{formatodivisa.format(dato.FacturasPagadsPorElCliente)}</TableCell>
+                      <TableCell>{formatodivisa.format(dato.FacturacionPendientedePago)}</TableCell>
+                      <TableCell>{formatodivisa.format(dato.AnticipoContractual)}</TableCell>
+                      <TableCell>{formatodivisa.format(dato.AnticiposPagadosxElCliente)}</TableCell>
+                      <TableCell>{formatodivisa.format(dato.SaldoAnticipoPorAmortizar)}</TableCell>
+                      <TableCell>{formatodivisa.format(dato.AnticiposPendientesDePago)}</TableCell>
+                    </TableRow>
+                  ))
+                }
+                </>
               }
           </TableBody>
         </Table>
