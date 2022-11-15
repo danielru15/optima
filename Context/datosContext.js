@@ -215,8 +215,210 @@ export const DatosProvider = ({ children }) => {
     }
     
   }
+  const CrearDatosE = async (Contratado) => {
+    let Total_otrossi = Number((Number(OTROSSI1)+Number(OTROSSI2)+Number(OTROSSI3)+Number(OTROSSI4)+Number(OTROSSI5)+Number(OTROSSI6)+Number(OTROSSI7)+Number(OTROSSI8)+Number(OTROSSI9)+Number(OTROSSI10)+Number(OTROSSI11)+Number(OTROSSI12)))
+    let Valor_Total_Contratado = Number(ValorContratoSinIVA) + Number(Total_otrossi)
+    let Saldo_Anticipo_por_Amortizar = Number((AnticiposPagadosxElCliente) - (AnticipoAmortizadoPorElCliente))
+    let Iva_Facturado = Number(0.19 * Number(ValorTotalFacturadoSinIVA))
+    let Facturacion_Pendiente_Pago = Number(Number(ValorTotalFacturadoSinIVA) + Number(Iva_Facturado)) - Number((RetencionesYDescuentos)) - Number(FacturasPagadsPorElCliente) - Number((AnticiposPagadosxElCliente) - Number(Saldo_Anticipo_por_Amortizar))
+    let Plazo_Contractual = moment(FechafC).diff(moment(FechaiC,),'days')
+    let Plazo_Real = moment(FechafR).diff(moment(FechaiR,),'days')
+    try {
+      await addDoc(collection(db, 'MaestroHistoricOE'), {
+        Contratado:Contratado,
+        Ejecutado:Ejecutado,
+        Consecutivo:Number(Consecutivo),
+        Oferta:Oferta,
+        LineaNegocio:LineaNegocio,
+        Seudonimo:Seudonimo,
+        Nombre:Nombre,
+        DescripcionBreve:DescripcionBreve,
+        ClienteDirecto:ClienteDirecto,
+        ContactoCliente:ContactoCliente,
+        ClienteFinal:ClienteFinal,
+        Director:Director,
+        Coordinador:Coordinador,
+        Contrato:Contrato,
+        FechaInicioContractual:FechaiC,
+        FechaFinalContractual:FechafC,
+        PlazoContractual:Plazo_Contractual,
+        FechaInicioReal:FechaiR,
+        FechaFinalReal:FechafR,
+        PlazoReal:Plazo_Real,
+        ParticipacionOPTIMA:(Number(ParticipacionOPTIMA)),
+        ValorContratoSinIVA:(Number(ValorContratoSinIVA)),
+        IVA:(Number((0.19 * Number(ValorContratoSinIVA)))),
+        OTROSSI1:Number(OTROSSI1),
+        OTROSSI2:Number(OTROSSI2),
+        OTROSSI3:Number(OTROSSI3),
+        OTROSSI4:Number(OTROSSI4),
+        OTROSSI5:Number(OTROSSI5),
+        OTROSSI6:Number(OTROSSI6),
+        OTROSSI7:Number(OTROSSI7),
+        OTROSSI8:Number(OTROSSI8),
+        OTROSSI9:Number(OTROSSI9),
+        OTROSSI10:Number(OTROSSI10),
+        OTROSSI11:Number(OTROSSI11),
+        OTROSSI12:Number(OTROSSI12),
+        TotalOtrossi:(Number((Number(OTROSSI1)+Number(OTROSSI2)+Number(OTROSSI3)+Number(OTROSSI4)+Number(OTROSSI5)+Number(OTROSSI6)+Number(OTROSSI7)+Number(OTROSSI8)+Number(OTROSSI9)+Number(OTROSSI10)+Number(OTROSSI11)+Number(OTROSSI12)))),
+        ValorTotalContratado:(Valor_Total_Contratado),
+        PCO:(Number(PCO)),
+        Administracion:(Number(Administracion)),
+        Imprevistos:(Number(Imprevistos)),
+        UtilidadBruta:(Number(UtilidadBruta)),
+        PorcentAnticipoContractural:(Number(PorcentAnticipoContractural)),
+        AnticipoContractual:((Number(PorcentAnticipoContractural /100) * Number(ValorContratoSinIVA))),
+        AnticiposPagadosxElCliente:(Number(AnticiposPagadosxElCliente)),
+        ValorTotalFacturadoSinIVA:(Number(ValorTotalFacturadoSinIVA)),
+        IVAFacturado:(Number(0.19 * Number(ValorTotalFacturadoSinIVA))),
+        RetegantiaPorcent:Number(RetegantiaPorcent),
+        ValorReteGantia:(Number((Number(RetegantiaPorcent/100) * Number(ValorTotalFacturadoSinIVA)))),
+        ValorPendientePorFacturarSinIVA:(Number(Valor_Total_Contratado - ValorTotalFacturadoSinIVA)),
+        FacturasPagadsPorElCliente:(Number(FacturasPagadsPorElCliente)),
+        AnticipoAmortizadoPorElCliente:(Number(AnticipoAmortizadoPorElCliente)),
+        SaldoAnticipoPorAmortizar:(Number(Saldo_Anticipo_por_Amortizar)),
+        RetencionesYDescuentos:(Number(RetencionesYDescuentos)),
+        FacturacionPendientedePago:(Facturacion_Pendiente_Pago),
+        AnticiposPendientesDePago:(Number((Number(PorcentAnticipoContractural/100) * Number(ValorContratoSinIVA)) - Number(AnticiposPagadosxElCliente))),
+        RelacionFacturadoContratado:Number((Number(ValorTotalFacturadoSinIVA) / Number(Valor_Total_Contratado) )*100),
+        /*
+        Contratado:Contratado,
+      Ejecutado:Ejecutado,
+      Consecutivo:Number(Consecutivo),
+      Oferta:Oferta,
+      LineaNegocio:LineaNegocio,
+      Seudonimo:Seudonimo,
+      Nombre:Nombre,
+      DescripcionBreve:DescripcionBreve,
+      ClienteDirecto:ClienteDirecto,
+      ContactoCliente:ContactoCliente,
+      ClienteFinal:ClienteFinal,
+      Director:Director,
+      Coordinador:Coordinador,
+      Contrato:Contrato,
+      FechaInicioContractual:FechaiC,
+      FechaFinalContractual:FechafC,
+      FechaInicioReal:FechaiR,
+      FechaFinalReal:FechafR,
+      ParticipacionOPTIMA:(Number(ParticipacionOPTIMA)),
+      ValorContratoSinIVA:(Number(ValorContratoSinIVA)),
+      IVA:(Number((0.19 * Number(ValorContratoSinIVA)))),
+      OTROSSI1:Number(OTROSSI1),
+      OTROSSI2:Number(OTROSSI2),
+      OTROSSI3:Number(OTROSSI3),
+      OTROSSI4:Number(OTROSSI4),
+      OTROSSI5:(Number(OTROSSI5)),
+      OTROSSI6:(Number(OTROSSI6)),
+      OTROSSI7:(Number(OTROSSI7)),
+      OTROSSI8:(Number(OTROSSI8)),
+      OTROSSI9:(Number(OTROSSI9)),
+      OTROSSI10:(Number(OTROSSI10)),
+      OTROSSI11:(Number(OTROSSI11)),
+      OTROSSI12:(Number(OTROSSI12)),
+      TotalOtrossi:(Number((Number(OTROSSI1)+Number(OTROSSI2)+Number(OTROSSI3)+Number(OTROSSI4)+Number(OTROSSI5)+Number(OTROSSI6)+Number(OTROSSI7)+Number(OTROSSI8)+Number(OTROSSI9)+Number(OTROSSI10)+Number(OTROSSI11)+Number(OTROSSI12)))),
+      ValorTotalContratado:(Valor_Total_Contratado),
+      PCO:(Number(PCO)),
+      Administracion:(Number(Administracion)),
+      Imprevistos:(Number(Imprevistos)),
+      UtilidadBruta:(Number(UtilidadBruta)),
+      PorcentAnticipoContractural:(Number(PorcentAnticipoContractural)),
+      AnticipoContractual:((Number(PorcentAnticipoContractural /100) * Number(ValorContratoSinIVA))),
+      AnticiposPagadosxElCliente:(Number(AnticiposPagadosxElCliente)),
+      ValorTotalFacturadoSinIVA:(Number(ValorTotalFacturadoSinIVA)),
+      IVAFacturado:(Number(0.19 * Number(ValorTotalFacturadoSinIVA))),
+      RetegantiaPorcent:Number(RetegantiaPorcent),
+      ValorReteGantia: (Number((Number(RetegantiaPorcent/100) * Number(ValorTotalFacturadoSinIVA)))),
+      ValorPendientePorFacturarSinIVA:(Number(Valor_Total_Contratado - ValorTotalFacturadoSinIVA)),
+      FacturasPagadsPorElCliente:(Number(FacturasPagadsPorElCliente)),
+      AnticipoAmortizadoPorElCliente:(Number(AnticipoAmortizadoPorElCliente)),
+      SaldoAnticipoPorAmortizar:(Number(Saldo_Anticipo_por_Amortizar)),
+      RetencionesYDescuentos:(Number(RetencionesYDescuentos)),
+      FacturacionPendientedePago:(Facturacion_Pendiente_Pago),
+      AnticiposPendientesDePago:(Number((Number(PorcentAnticipoContractural/100) * Number(ValorContratoSinIVA)) - Number(AnticiposPagadosxElCliente))),
+      RelacionFacturadoContratado:(Number((Number(ValorTotalFacturadoSinIVA) / Number(Valor_Total_Contratado) )*100))
+       */
+      })
+      alert('registro Exitoso')
+    } catch (err) {
+      console.log(err)
+    }
+    
+  }
+  
   // Editar
   const Actualizar = async (id) => {
+    let Total_otrossi = Number((Number(OTROSSI1)+Number(OTROSSI2)+Number(OTROSSI3)+Number(OTROSSI4)+Number(OTROSSI5)+Number(OTROSSI6)+Number(OTROSSI7)+Number(OTROSSI8)+Number(OTROSSI9)+Number(OTROSSI10)+Number(OTROSSI11)+Number(OTROSSI12)))
+    let Valor_Total_Contratado = Number(ValorContratoSinIVA) + Number(Total_otrossi)
+    let Saldo_Anticipo_por_Amortizar = Number((AnticiposPagadosxElCliente) - (AnticipoAmortizadoPorElCliente))
+    let Iva_Facturado = Number(0.19 * Number(ValorTotalFacturadoSinIVA))
+    let Facturacion_Pendiente_Pago = Number(Number(ValorTotalFacturadoSinIVA) + Number(Iva_Facturado)) - Number((RetencionesYDescuentos)) - Number(FacturasPagadsPorElCliente) - Number((AnticiposPagadosxElCliente) - Number(Saldo_Anticipo_por_Amortizar))
+    let Plazo_Contractual = moment(FechafC).diff(moment(FechaiC,),'days')
+    let Plazo_Real = moment(FechafR).diff(moment(FechaiR,),'days')
+    const taskDocRef = doc(db, 'MaestroHistoricO', id)
+    try{
+      await updateDoc(taskDocRef, {
+        Contratado:Contratado,
+        Ejecutado:Ejecutado,
+        Consecutivo:Number(Consecutivo),
+        Oferta:Oferta,
+        LineaNegocio:LineaNegocio,
+        Seudonimo:Seudonimo,
+        Nombre:Nombre,
+        DescripcionBreve:DescripcionBreve,
+        ClienteDirecto:ClienteDirecto,
+        ContactoCliente:ContactoCliente,
+        ClienteFinal:ClienteFinal,
+        Director:Director,
+        Coordinador:Coordinador,
+        Contrato:Contrato,
+        FechaInicioContractual:FechaiC,
+        FechaFinalContractual:FechafC,
+        PlazoContractual:Plazo_Contractual,
+        FechaInicioReal:FechaiR,
+        FechaFinalReal:FechafR,
+        PlazoReal:Plazo_Real,
+        ParticipacionOPTIMA:(Number(ParticipacionOPTIMA)),
+        ValorContratoSinIVA:(Number(ValorContratoSinIVA)),
+        IVA:(Number((0.19 * Number(ValorContratoSinIVA)))),
+        OTROSSI1:Number(OTROSSI1),
+        OTROSSI2:Number(OTROSSI2),
+        OTROSSI3:Number(OTROSSI3),
+        OTROSSI4:Number(OTROSSI4),
+        OTROSSI5:Number(OTROSSI5),
+        OTROSSI6:Number(OTROSSI6),
+        OTROSSI7:Number(OTROSSI7),
+        OTROSSI8:Number(OTROSSI8),
+        OTROSSI9:Number(OTROSSI9),
+        OTROSSI10:Number(OTROSSI10),
+        OTROSSI11:Number(OTROSSI11),
+        OTROSSI12:Number(OTROSSI12),
+        TotalOtrossi:(Number((Number(OTROSSI1)+Number(OTROSSI2)+Number(OTROSSI3)+Number(OTROSSI4)+Number(OTROSSI5)+Number(OTROSSI6)+Number(OTROSSI7)+Number(OTROSSI8)+Number(OTROSSI9)+Number(OTROSSI10)+Number(OTROSSI11)+Number(OTROSSI12)))),
+        ValorTotalContratado:(Valor_Total_Contratado),
+        PCO:(Number(PCO)),
+        Administracion:(Number(Administracion)),
+        Imprevistos:(Number(Imprevistos)),
+        UtilidadBruta:(Number(UtilidadBruta)),
+        PorcentAnticipoContractural:(Number(PorcentAnticipoContractural)),
+        AnticipoContractual:((Number(PorcentAnticipoContractural /100) * Number(ValorContratoSinIVA))),
+        AnticiposPagadosxElCliente:(Number(AnticiposPagadosxElCliente)),
+        ValorTotalFacturadoSinIVA:(Number(ValorTotalFacturadoSinIVA)),
+        IVAFacturado:(Number(0.19 * Number(ValorTotalFacturadoSinIVA))),
+        RetegantiaPorcent:Number(RetegantiaPorcent),
+        ValorReteGantia:(Number((Number(RetegantiaPorcent/100) * Number(ValorTotalFacturadoSinIVA)))),
+        ValorPendientePorFacturarSinIVA:(Number(Valor_Total_Contratado - ValorTotalFacturadoSinIVA)),
+        FacturasPagadsPorElCliente:(Number(FacturasPagadsPorElCliente)),
+        AnticipoAmortizadoPorElCliente:(Number(AnticipoAmortizadoPorElCliente)),
+        SaldoAnticipoPorAmortizar:(Number(Saldo_Anticipo_por_Amortizar)),
+        RetencionesYDescuentos:(Number(RetencionesYDescuentos)),
+        FacturacionPendientedePago:(Facturacion_Pendiente_Pago),
+        AnticiposPendientesDePago:(Number((Number(PorcentAnticipoContractural/100) * Number(ValorContratoSinIVA)) - Number(AnticiposPagadosxElCliente))),
+        RelacionFacturadoContratado:Number((Number(ValorTotalFacturadoSinIVA) / Number(Valor_Total_Contratado) )*100),
+      })
+    } catch (err) {
+      alert(err)
+    }    
+  }
+  const ActualizarE = async (id) => {
     let Total_otrossi = Number((Number(OTROSSI1)+Number(OTROSSI2)+Number(OTROSSI3)+Number(OTROSSI4)+Number(OTROSSI5)+Number(OTROSSI6)+Number(OTROSSI7)+Number(OTROSSI8)+Number(OTROSSI9)+Number(OTROSSI10)+Number(OTROSSI11)+Number(OTROSSI12)))
     let Valor_Total_Contratado = Number(ValorContratoSinIVA) + Number(Total_otrossi)
     let Saldo_Anticipo_por_Amortizar = Number((AnticiposPagadosxElCliente) - (AnticipoAmortizadoPorElCliente))
@@ -297,7 +499,14 @@ export const DatosProvider = ({ children }) => {
       alert(err)
     }
   }
-
+  const EliminarE = async (id) => {
+    const taskDocRef = doc(db, 'MaestroHistoricO', id)
+    try{
+      await deleteDoc(taskDocRef)
+    } catch (err) {
+      alert(err)
+    }
+  }
   // Mostrar Datos
   useEffect(() => {
     const q = query(collection(db, 'MaestroHistoricO'),orderBy("Consecutivo" , "asc"), orderBy("Seudonimo", "asc" ), )

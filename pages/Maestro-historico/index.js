@@ -14,7 +14,6 @@ const Index = () => {
   const [Search, setSearch] = useState('')
   const {datosMaestro,Eliminar,formatodivisa} = useContext(DatosContext)
   let datos = []
-  console.log(datosMaestro)
 
   const Searcher = (e) => {
     setSearch(e.target.value)
