@@ -3,7 +3,7 @@ import { DatosContext } from "../../Context/datosContext"
 import Layout from '../../components/layout/Layout'
 import InformeCard from '../../components/maestroh/InformeCard'
 
-const informeExtranjeros = () => {
+const InformeExtranjeros = () => {
   const {datosMaestroE} = useContext(DatosContext)
   const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -21,4 +21,4 @@ const informeExtranjeros = () => {
   )
 }
 
-export default informeExtranjeros
+export default InformeExtranjeros
