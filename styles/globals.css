@@ -35,11 +35,21 @@
 .Cerrado {
   background-color: red;
 }
+.pendiente-pago {
+  background-color: rgb(133, 208, 133);
+  color: #111;
+}
+.saldo-x-amortizar {
+  background-color: rgb(244, 147, 147);
+  color: #111;
+}
 .En-curso {
   background-color: cadetblue;
 }
-.aa {
-  width: 600px !important;
+.fixed {
+  position: sticky;
+  left: 0;
+  background: white;
 }
 @media screen and (max-height: 450px) {
   .sidenav {padding-top: 15px;}

@@ -54,7 +54,8 @@ export const DatosProvider = ({ children }) => {
   const [FacturasPagadsPorElCliente, setFacturasPagadsPorElCliente] = useState()
   const [AnticipoAmortizadoPorElCliente, setAnticipoAmortizadoPorElCliente] = useState()
   const [RetencionesYDescuentos, setRetencionesYDescuentos] = useState()
-  const [datosMaestro, setDatosMaestro] = useState([]);
+  const [datosMaestro, setDatosMaestro] = useState([])
+  const [datosMaestroE, setDatosMaestroE] = useState([]);
 
   // Mostrar en pesos 
   const formatodivisa = new Intl.NumberFormat('es-CO',{
@@ -149,7 +150,7 @@ export const DatosProvider = ({ children }) => {
         AnticipoAmortizadoPorElCliente:(Number(AnticipoAmortizadoPorElCliente)),
         SaldoAnticipoPorAmortizar:(Number(Saldo_Anticipo_por_Amortizar)),
         RetencionesYDescuentos:(Number(RetencionesYDescuentos)),
-        FacturacionPendientedePago:(Facturacion_Pendiente_Pago),
+        FacturacionPendientedePago:(Facturacion_Pendiente_Pago)-Number(RetencionesYDescuentos),
         AnticiposPendientesDePago:(Number((Number(PorcentAnticipoContractural/100) * Number(ValorContratoSinIVA)) - Number(AnticiposPagadosxElCliente))),
         RelacionFacturadoContratado:Number((Number(ValorTotalFacturadoSinIVA) / Number(Valor_Total_Contratado) )*100),
         /*
@@ -278,7 +279,7 @@ export const DatosProvider = ({ children }) => {
         AnticipoAmortizadoPorElCliente:(Number(AnticipoAmortizadoPorElCliente)),
         SaldoAnticipoPorAmortizar:(Number(Saldo_Anticipo_por_Amortizar)),
         RetencionesYDescuentos:(Number(RetencionesYDescuentos)),
-        FacturacionPendientedePago:(Facturacion_Pendiente_Pago),
+        FacturacionPendientedePago:(Facturacion_Pendiente_Pago)-Number(RetencionesYDescuentos),
         AnticiposPendientesDePago:(Number((Number(PorcentAnticipoContractural/100) * Number(ValorContratoSinIVA)) - Number(AnticiposPagadosxElCliente))),
         RelacionFacturadoContratado:Number((Number(ValorTotalFacturadoSinIVA) / Number(Valor_Total_Contratado) )*100),
         /*
@@ -410,7 +411,7 @@ export const DatosProvider = ({ children }) => {
         AnticipoAmortizadoPorElCliente:(Number(AnticipoAmortizadoPorElCliente)),
         SaldoAnticipoPorAmortizar:(Number(Saldo_Anticipo_por_Amortizar)),
         RetencionesYDescuentos:(Number(RetencionesYDescuentos)),
-        FacturacionPendientedePago:(Facturacion_Pendiente_Pago),
+        FacturacionPendientedePago:(Facturacion_Pendiente_Pago)-Number(RetencionesYDescuentos),
         AnticiposPendientesDePago:(Number((Number(PorcentAnticipoContractural/100) * Number(ValorContratoSinIVA)) - Number(AnticiposPagadosxElCliente))),
         RelacionFacturadoContratado:Number((Number(ValorTotalFacturadoSinIVA) / Number(Valor_Total_Contratado) )*100),
       })
@@ -482,7 +483,7 @@ export const DatosProvider = ({ children }) => {
         AnticipoAmortizadoPorElCliente:(Number(AnticipoAmortizadoPorElCliente)),
         SaldoAnticipoPorAmortizar:(Number(Saldo_Anticipo_por_Amortizar)),
         RetencionesYDescuentos:(Number(RetencionesYDescuentos)),
-        FacturacionPendientedePago:(Facturacion_Pendiente_Pago),
+        FacturacionPendientedePago:(Facturacion_Pendiente_Pago)-Number(RetencionesYDescuentos),
         AnticiposPendientesDePago:(Number((Number(PorcentAnticipoContractural/100) * Number(ValorContratoSinIVA)) - Number(AnticiposPagadosxElCliente))),
         RelacionFacturadoContratado:Number((Number(ValorTotalFacturadoSinIVA) / Number(Valor_Total_Contratado) )*100),
       })
@@ -509,13 +510,23 @@ export const DatosProvider = ({ children }) => {
   }
   // Mostrar Datos
   useEffect(() => {
+    const E = query(collection(db, 'MaestroHistoricOE') )
     const q = query(collection(db, 'MaestroHistoricO'),orderBy("Consecutivo" , "asc"), orderBy("Seudonimo", "asc" ), )
+    onSnapshot(E, (querySnapshot) => {
+      setDatosMaestroE(querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })))
+    })
+    
+    
     onSnapshot(q, (querySnapshot) => {
       setDatosMaestro(querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       })))
     })
+    
   },[])
 
 
@@ -612,6 +623,11 @@ export const DatosProvider = ({ children }) => {
       FacturasPagadsPorElCliente,
       AnticipoAmortizadoPorElCliente,
       RetencionesYDescuentos,
+      CrearDatosE,
+      ActualizarE,
+      datosMaestroE, 
+      setDatosMaestroE,
+      EliminarE
 
 
        }}>
