@@ -5,12 +5,12 @@ import { DatosContext } from "../../Context/datosContext"
 import { useRouter } from "next/router";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import { DataGrid, renderActionsCell } from '@mui/x-data-grid';
-
+import { DataGrid, renderCell } from '@mui/x-data-grid';
+import { Chip } from "@mui/material";
 
 
 const Extranjeros = () => {
-  const {datosMaestroE,Eliminar,formatodivisa} = useContext(DatosContext)
+  const {datosMaestroE,EliminarE} = useContext(DatosContext)
   const [Search, setSearch] = useState('')
   const router = useRouter();
   let datos = []
@@ -38,7 +38,7 @@ const Extranjeros = () => {
 
   const columns = [
     {headerName: "Acciones", width:200, type:"actions", renderCell:(params)=> <div>
-      <Button variant="contained" size="small" color="success" onClick={() => router.push(`/Maestro-historico/${params.row.id}`)}>Editar</Button><Button onClick={() => Eliminar(params.id)} size="small" variant="contained" color="error">Eliminar</Button>
+      <Button variant="contained" size="small" color="success" onClick={() => router.push(`/Maestro-historico/${params.row.id}`)}>Editar</Button><Button onClick={() => EliminarE(params.id)} size="small" variant="contained" color="error">Eliminar</Button>
     </div>},
     {field:"Contratado", headerName: "Contratado", width:100},
     {field:"Ejecutado", headerName: "Ejecutado En"},
@@ -96,7 +96,7 @@ const Extranjeros = () => {
     {field: "FacturacionPendientedePago", headerName: "Neto Facturas Pendientes de pago",width: 300,...usdPrice, cellClassName: (params) => params.value >= 1 ? 'pendiente-pago' : '' },
     {field: "AnticiposPendientesDePago",headerName: "valor anticipo Pendientes de pago",width: 300,...usdPrice, cellClassName: (params) => params.value >= 1 ? 'pendiente-pago' : '' },
     {field: "RelacionFacturadoContratado",headerName: "Relación Facturado / Contratado",width: 200,valueFormatter: ({ value }) => `${Math.round(value)}%`, },
-    {field:"Estado", headerName: "Estado" },
+    {field:"Estado", headerName: "Estado", renderCell:(params) => <Chip label={params.value} color={params.value === 'En curso' ?  'success' : params.value === 'Cerrado' ?  'error' : 'warning'} /> }
   ]
 
   return (
@@ -113,8 +113,8 @@ const Extranjeros = () => {
       <DataGrid
         rows={datos}
         columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5,10,25,50]}
+        pageSize={6}
+        rowsPerPageOptions={[6,10,25,50]}
       />
       </div>
     </Layout>

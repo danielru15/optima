@@ -9,6 +9,7 @@ import TextField from "@mui/material/TextField";
 
 const FormularioE = () => {
   const {
+    ImpuestosE, setImpuestosE,
     ActualizarE,
     setContratado,
     Contratado,
@@ -97,16 +98,19 @@ FechafR,
 FechaiR,
 Consecutivo,
     CrearDatosE,
-    datosMaestro} = useContext(DatosContext)
+    Estadoo, setEstadoo,
+    datosMaestroE} = useContext(DatosContext)
   const {push, query} = useRouter();
 
 
   useEffect(() => {
     if(query.id){
-      const encontrado = datosMaestro.find(dato => dato.id === query.id)
+      const encontrado = datosMaestroE.find(dato => dato.id === query.id) 
       setContratado(encontrado.Contratado)
       setEjecutado(encontrado.Ejecutado)
+      setAnticiposPagadosxElCliente(encontrado.AnticiposPagadosxElCliente)
       setNombre(encontrado.Nombre)
+      setImpuestosE(encontrado.Impuestos)
       setRetencionesYDescuentos(encontrado.RetencionesYDescuentos)
     setAnticipoAmortizadoPorElCliente(encontrado.AnticipoAmortizadoPorElCliente)
     setFacturasPagadsPorElCliente(encontrado.FacturasPagadsPorElCliente)
@@ -141,12 +145,12 @@ Consecutivo,
     setOferta(encontrado.Oferta)
     setSeudonimo (encontrado.Seudonimo)
     setContactoCliente(encontrado.ContactoCliente)
-    setFechaiC(encontrado.FechaiC)
-    setFechafC(encontrado.FechafC)
-    setFechafR(encontrado.FechafR)
-    setFechaiR(encontrado.FechaiR)
+    setFechaiC(encontrado.FechaInicioContractual)
+    setFechafC(encontrado.FechaFinalContractual)
+    setFechafR(encontrado.FechaFinalReal)
+    setFechaiR(encontrado.FechaInicioReal)
     setConsecutivo(encontrado.Consecutivo)
-
+    setEstadoo(encontrado.Estadoo)
     console.log(encontrado)
     }
   }, [])
@@ -214,24 +218,28 @@ Consecutivo,
           <TextField
             label="Fecha Inicio Contractural"
             type="date"
+            required pattern="\d{4}-\d{2}-\d{2}" 
             onChange={e => setFechaiC(e.target.value)}
             value={FechaiC}
           />
           <TextField
             label="Fecha Final Contractural"
             type="date"
+            required pattern="\d{4}-\d{2}-\d{2}" 
             onChange={e => setFechafC(e.target.value)}
             value={FechafC}
           />
           <TextField
             label="Fecha Inicio Real"
             type="date"
+            required pattern="\d{4}-\d{2}-\d{2}" 
             onChange={e => setFechaiR(e.target.value)}
             value={FechaiR}
           />
           <TextField
             label="Fecha Final Real"
             type="date"
+            required pattern="\d{4}-\d{2}-\d{2}" 
             onChange={e => setFechafR(e.target.value)}
             value={FechafR}
           />
@@ -246,6 +254,12 @@ Consecutivo,
             type="number"
             onChange={e => setValorContratoSinIVA(e.target.value)}
             value={ValorContratoSinIVA}
+          />
+          <TextField
+            label="Valor Impuestps"
+            type="number"
+            onChange={e => setImpuestosE(e.target.value)}
+            value={ImpuestosE}
           />
           <TextField
             label="OTROSI 1"
@@ -390,6 +404,11 @@ Consecutivo,
             type="number"
             onChange={e => setRetencionesYDescuentos(e.target.value)}
             value={RetencionesYDescuentos}
+          />
+          <TextField
+            label="Estado"
+            onChange={e => setEstadoo(e.target.value)}
+            value={Estadoo}
           />
         </Box>
       </FormGroup>

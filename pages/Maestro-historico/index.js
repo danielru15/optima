@@ -6,6 +6,7 @@ import Button from "@mui/material/Button";
 import React from "react";
 import { DataGrid, renderActionsCell } from '@mui/x-data-grid';
 import TextField from "@mui/material/TextField";
+import { Chip } from "@mui/material";
 import CircularProgress from '@mui/material/CircularProgress';
 
 
@@ -22,6 +23,7 @@ const Index = () => {
 
   if (!Search) {
     datos = datosMaestro
+    console.log(datos)
   }else {
     datos = datosMaestro.filter((dato) => dato.Seudonimo.toLowerCase().includes(Search.toLocaleLowerCase())) 
   }
@@ -93,7 +95,7 @@ const Index = () => {
     {field: "FacturacionPendientedePago", headerName: "Neto Facturas Pendientes de pago",width: 300,...usdPrice, cellClassName: (params) => params.value >= 1 ? 'pendiente-pago' : '' },
     {field: "AnticiposPendientesDePago",headerName: "valor anticipo Pendientes de pago",width: 300,...usdPrice, cellClassName: (params) => params.value >= 1 ? 'pendiente-pago' : '' },
     {field: "RelacionFacturadoContratado",headerName: "Relación Facturado / Contratado",width: 200,valueFormatter: ({ value }) => `${Math.round(value)}%`, },
-    {field:"Estado", headerName: "Estado",  },
+    {field:"Estado", headerName: "Estado", renderCell:(params) => <Chip label={params.value} color={params.value === 'En curso' ?  'success' : params.value === 'Cerrado' ?  'error' : 'warning'} /> },
   ]
   return (
     <Layout>
@@ -111,8 +113,8 @@ const Index = () => {
       <DataGrid
         rows={datos}
         columns={columns}
-        pageSize={8}
-        rowsPerPageOptions={[10,25,50]}
+        pageSize={6}
+        rowsPerPageOptions={[6,10,25,50]}
       />
           
             

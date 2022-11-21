@@ -97,16 +97,22 @@ FechafR,
 FechaiR,
 Consecutivo,
     CrearDatos,
-    datosMaestro} = useContext(DatosContext)
+    setEstadoo,
+    Estadoo,
+    datosMaestro,
+    datosMaestroE,
+  ActualizarE} = useContext(DatosContext)
   const {push, query} = useRouter();
-
+  let encontradoE = datosMaestroE.find(dato => dato.id === query.id)
 
   useEffect(() => {
     if(query.id){
-      const encontrado = datosMaestro.find(dato => dato.id === query.id)
+      encontradoE = datosMaestroE.find(dato => dato.id === query.id) 
+      const encontrado = datosMaestro.find(dato => dato.id === query.id) || encontradoE
       setContratado(encontrado.Contratado)
       setEjecutado(encontrado.Ejecutado)
       setNombre(encontrado.Nombre)
+      setAnticiposPagadosxElCliente(encontrado.AnticiposPagadosxElCliente)
       setRetencionesYDescuentos(encontrado.RetencionesYDescuentos)
     setAnticipoAmortizadoPorElCliente(encontrado.AnticipoAmortizadoPorElCliente)
     setFacturasPagadsPorElCliente(encontrado.FacturasPagadsPorElCliente)
@@ -141,13 +147,12 @@ Consecutivo,
     setOferta(encontrado.Oferta)
     setSeudonimo (encontrado.Seudonimo)
     setContactoCliente(encontrado.ContactoCliente)
-    setFechaiC(encontrado.FechaiC)
-    setFechafC(encontrado.FechafC)
-    setFechafR(encontrado.FechafR)
-    setFechaiR(encontrado.FechaiR)
+    setFechaiC(encontrado.FechaInicioContractual)
+    setFechafC(encontrado.FechaFinalContractual)
+    setFechafR(encontrado.FechaFinalReal)
+    setFechaiR(encontrado.FechaInicioReal)
     setConsecutivo(encontrado.Consecutivo)
-
-    console.log(encontrado)
+    setEstadoo(encontrado.Estado)
     }
   }, [])
   
@@ -162,10 +167,18 @@ Consecutivo,
     }
   }
 
+  const handleSubmitE = (e) => {
+    let id = query.id
+    e.preventDefault()
+      ActualizarE(id)
+      push('/Maestro-historico')
+    
+  }
+
  
   
   return (
-    <form  onSubmit={handleSubmit}>
+    <form  onSubmit={encontradoE ? handleSubmitE : handleSubmit}>
       <FormGroup>
         <FormLabel>INFORMACION DEL PROYECTO</FormLabel>
         <Box sx={{ "& > :not(style)": { m: 1 } }} noValidate autoComplete="off">
@@ -390,6 +403,11 @@ Consecutivo,
             type="number"
             onChange={e => setRetencionesYDescuentos(e.target.value)}
             value={RetencionesYDescuentos}
+          />
+           <TextField
+            label="Estado"
+            onChange={e => setEstadoo(e.target.value)}
+            value={Estadoo}
           />
         </Box>
       </FormGroup>

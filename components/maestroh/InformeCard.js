@@ -6,28 +6,34 @@ import { Button, Card, CardContent, Grid,  Table, TableBody, TableCell, TableCon
 const InformeCard = ({datosMaestro,formatodivisa,titulo}) => {
     const [Linea, setLinea] = useState('')
     const [Coord, setCoord] = useState('')
+    const [Seudonimoo, setSeudonimoo] = useState('')
     const [FechaInicioC, setFechaInicioC] = useState('')
     const [FechaFinC, setFechaFinC] = useState('')
+    const [Estade, setEstade] = useState('')
     const [filtro, setFiltro] = useState()
     const first = useRef()
     const Categoria = [...new Set(datosMaestro.map((Val) => Val.LineaNegocio))];
     const Coordinador = [...new Set(datosMaestro.map((Val) => Val.Coordinador))]
-
+    const Seudonimo = [...new Set(datosMaestro.map((Val) => Val.Seudonimo))]
+    const Estado = ['Cerrado','Cierre administrativo', 'En curso']
    //Function filtro
 const filtrar = (e) => {
     e.preventDefault()
-    if(Linea !== '' || FechaInicioC !== '' ||  FechaFinC !== '' || Coord !== '' ){
-      setFiltro(datosMaestro.filter((d) => d.LineaNegocio === Linea || FechaInicioC >= d.FechaInicioContractual || Coord === d.Coordinador  ))
+    if(Seudonimo !== '' || Linea !== '' || FechaInicioC !== '' ||  FechaFinC !== '' || Coord !== '' || Estade !== ''){
+      setFiltro(datosMaestro.filter((d) => d.Seudonimo === Seudonimoo || d.LineaNegocio === Linea  || Coord === d.Coordinador || Estade === d.Estado || FechaInicioC >= d.FechaInicioContractual  ))
     }
   }
   const limpiar = (e) => {
     e.preventDefault()
+    setSeudonimoo('')
     setFechaFinC('')
     setFechaInicioC('')
     setLinea('')
     setCoord('')
     setFiltro('')
+    setEstade('')
   }
+
     // valores Totales
     let Total_Contratado = filtro?filtro.reduce(
       (sum, value) => typeof value.ValorTotalContratado === "number"? sum + value.ValorTotalContratado: sum, 0):datosMaestro.reduce(
@@ -72,7 +78,20 @@ const filtrar = (e) => {
     let Total_Otrossi = filtro?filtro.reduce(
                 (sum, value) => typeof value.TotalOtrossi === "number" ? sum + value.TotalOtrossi : sum,0 ):datosMaestro.reduce(
                   (sum, value) => typeof value.TotalOtrossi === "number" ? sum + value.TotalOtrossi : sum,0 )
-  
+                  
+    let Total_Administracion = filtro?filtro.reduce(
+        (sum, value) => typeof value.Administracion === "number" ? sum + value.Administracion : sum,0 ):datosMaestro.reduce(
+        (sum, value) => typeof value.Administracion === "number" ? sum + value.Administracion : sum,0 )
+    
+        let Total_Pco = filtro?filtro.reduce(
+          (sum, value) => typeof value.PCO === "number" ? sum + value.PCO : sum,0 ):datosMaestro.reduce(
+            (sum, value) => typeof value.PCO === "number" ? sum + value.PCO : sum,0 )
+    
+  // Indicadores
+  let costos = (Total_Pco + Total_Administracion + Total_Imprevistos)
+  let Margen_bruto_Porcentual = (UtilidadBruta/Total_Contratado)*100
+  let Roi = ((Total_Contratado - costos)/(costos))
+
     return (
       <>
         <Typography variant='h4'>{titulo}</Typography>
@@ -180,10 +199,63 @@ const filtrar = (e) => {
             </Card>
   
           </Grid>
+          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
+            <Card>
+              <CardContent>
+                <Typography color={'darkgreen'}>Valor total PCO</Typography>
+                <Typography>{formatodivisa.format(Total_Pco)}</Typography>
+              </CardContent>
+            </Card>
+  
+          </Grid>
+          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
+            <Card>
+              <CardContent>
+                <Typography color={'darkgreen'}>Valor total Adminisracion</Typography>
+                <Typography>{formatodivisa.format(Total_Administracion)}</Typography>
+              </CardContent>
+            </Card>
+  
+          </Grid>
+        </Grid>
+        <Typography variant='p'>Indicadores</Typography>
+        <Grid container spacing={1} marginTop={2} marginBottom={4} >
+        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+            <Card>
+              <CardContent>
+                <Typography color={'darkgreen'}>ROI:Total contratado - (Pco + Adminisracion + imprevistos)/(Pco + Adminisracion + imprevistos)</Typography>
+                <Typography>{Roi}</Typography>
+              </CardContent>
+            </Card>
+  
+          </Grid>
+          <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+            <Card>
+              <CardContent>
+                <Typography color={'darkgreen'}>Margen Bruto Porcentual: Utilidad Bruta / Total Contratado</Typography>
+                <Typography>{`${Math.round(Margen_bruto_Porcentual)}%`}</Typography>
+              </CardContent>
+            </Card>
+  
+          </Grid>
+          
         </Grid>
         <form onSubmit={filtrar} ref={first} >
           <FormLabel>Filtrar</FormLabel>
-  
+          <FormControl>
+          <InputLabel>Seudonimo</InputLabel>
+          <Select
+            label="Seudonimo"
+            value={Seudonimoo}
+            onChange={e => setSeudonimoo(e.target.value)}
+          >
+           {
+            Seudonimo.map((c,i) => (
+              <MenuItem  key={i} value={c}>{c}</MenuItem>
+            ))
+           }
+          </Select>
+          </FormControl>
           <FormControl>
           <InputLabel>Linea Negocio</InputLabel>
           <Select
@@ -213,17 +285,33 @@ const filtrar = (e) => {
           </Select>
           </FormControl>
           <TextField 
-          type="date"
+          label="Fecha inicio"
+          type="month"
           onChange={e => setFechaInicioC(e.target.value)}
         
           
           />
           
           <TextField 
-          type="date"
+          type="month"
+          label="Fecha fin"
           onChange={e => setFechaFinC(e.target.value)}
       
           />
+          <FormControl>
+          <InputLabel>Estado</InputLabel>
+          <Select
+            label="Estado"
+            value={Estade}
+            onChange={e => setEstade(e.target.value)}
+          >
+           {
+            Estado.map((c,i) => (
+              <MenuItem  key={i} value={c}>{c}</MenuItem>
+            ))
+           }
+          </Select>
+          </FormControl>
           <Button variant="contained" color='success' type="submit" >Filtrar</Button>
           <Button variant="contained" color='error' onClick={limpiar} >Limpiar</Button>
         </form>
@@ -249,6 +337,8 @@ const filtrar = (e) => {
                 <TableCell>Total Utilidad Bruta</TableCell>
                 <TableCell>Total Otrossi</TableCell>
                 <TableCell>Imprevistos</TableCell>
+                <TableCell>Administracion</TableCell>
+                <TableCell>PCO</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -273,6 +363,8 @@ const filtrar = (e) => {
                       <TableCell>{formatodivisa.format(dato.UtilidadBruta)}</TableCell>
                       <TableCell>{formatodivisa.format(dato.TotalOtrossi)}</TableCell>
                       <TableCell>{formatodivisa.format(dato.Imprevistos)}</TableCell>
+                      <TableCell>{formatodivisa.format(dato.Administracion)}</TableCell>
+                        <TableCell>{formatodivisa.format(dato.PCO)}</TableCell>
                     </TableRow>
                   )):
                   <>
@@ -297,6 +389,8 @@ const filtrar = (e) => {
                         <TableCell>{formatodivisa.format(dato.UtilidadBruta)}</TableCell>
                         <TableCell>{formatodivisa.format(dato.TotalOtrossi)}</TableCell>
                         <TableCell>{formatodivisa.format(dato.Imprevistos)}</TableCell>
+                        <TableCell>{formatodivisa.format(dato.Administracion)}</TableCell>
+                        <TableCell>{formatodivisa.format(dato.PCO)}</TableCell>
                       </TableRow>
                     ))
                   }

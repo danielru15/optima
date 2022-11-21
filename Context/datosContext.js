@@ -43,6 +43,7 @@ export const DatosProvider = ({ children }) => {
   const [OTROSSI10, setOTROSSI10] = useState(0)
   const [OTROSSI11, setOTROSSI11] = useState(0)
   const [OTROSSI12, setOTROSSI12] = useState(0)
+  const [ImpuestosE, setImpuestosE] = useState(0)
   const [PCO, setPCO] = useState(0)
   const [Administracion, setAdministracion] = useState(0)
   const [Imprevistos, setImprevistos] = useState(0)
@@ -54,6 +55,7 @@ export const DatosProvider = ({ children }) => {
   const [FacturasPagadsPorElCliente, setFacturasPagadsPorElCliente] = useState()
   const [AnticipoAmortizadoPorElCliente, setAnticipoAmortizadoPorElCliente] = useState()
   const [RetencionesYDescuentos, setRetencionesYDescuentos] = useState()
+  const [Estadoo, setEstadoo] = useState('')
   const [datosMaestro, setDatosMaestro] = useState([])
   const [datosMaestroE, setDatosMaestroE] = useState([]);
 
@@ -92,9 +94,15 @@ export const DatosProvider = ({ children }) => {
     let Valor_Total_Contratado = Number(ValorContratoSinIVA) + Number(Total_otrossi)
     let Saldo_Anticipo_por_Amortizar = Number((AnticiposPagadosxElCliente) - (AnticipoAmortizadoPorElCliente))
     let Iva_Facturado = Number(0.19 * Number(ValorTotalFacturadoSinIVA))
-    let Facturacion_Pendiente_Pago = Number(Number(ValorTotalFacturadoSinIVA) + Number(Iva_Facturado)) - Number((RetencionesYDescuentos)) - Number(FacturasPagadsPorElCliente) - Number((AnticiposPagadosxElCliente) - Number(Saldo_Anticipo_por_Amortizar))
+    let Facturacion_Pendiente_Pago = Number(Number(ValorTotalFacturadoSinIVA) + Number(Iva_Facturado)) - Number((RetencionesYDescuentos)) - Number(FacturasPagadsPorElCliente) - Number((AnticiposPagadosxElCliente) - Number(Saldo_Anticipo_por_Amortizar) - Number(RetencionesYDescuentos))
     let Plazo_Contractual = moment(FechafC).diff(moment(FechaiC,),'days')
     let Plazo_Real = moment(FechafR).diff(moment(FechaiR,),'days')
+    let relacion = Number((Number(ValorTotalFacturadoSinIVA) / Number(Valor_Total_Contratado) )*100)
+    if( relacion <= 0.99 * 100) {
+      setEstadoo('En curso')
+    }else {
+      setEstadoo('Cerrado')
+    }
     try {
       await addDoc(collection(db, 'MaestroHistoricO'), {
         Contratado:Contratado,
@@ -150,9 +158,10 @@ export const DatosProvider = ({ children }) => {
         AnticipoAmortizadoPorElCliente:(Number(AnticipoAmortizadoPorElCliente)),
         SaldoAnticipoPorAmortizar:(Number(Saldo_Anticipo_por_Amortizar)),
         RetencionesYDescuentos:(Number(RetencionesYDescuentos)),
-        FacturacionPendientedePago:(Facturacion_Pendiente_Pago)-Number(RetencionesYDescuentos),
+        FacturacionPendientedePago:(Facturacion_Pendiente_Pago),
         AnticiposPendientesDePago:(Number((Number(PorcentAnticipoContractural/100) * Number(ValorContratoSinIVA)) - Number(AnticiposPagadosxElCliente))),
         RelacionFacturadoContratado:Number((Number(ValorTotalFacturadoSinIVA) / Number(Valor_Total_Contratado) )*100),
+        Estado:Estadoo
         /*
         Contratado:Contratado,
       Ejecutado:Ejecutado,
@@ -220,10 +229,15 @@ export const DatosProvider = ({ children }) => {
     let Total_otrossi = Number((Number(OTROSSI1)+Number(OTROSSI2)+Number(OTROSSI3)+Number(OTROSSI4)+Number(OTROSSI5)+Number(OTROSSI6)+Number(OTROSSI7)+Number(OTROSSI8)+Number(OTROSSI9)+Number(OTROSSI10)+Number(OTROSSI11)+Number(OTROSSI12)))
     let Valor_Total_Contratado = Number(ValorContratoSinIVA) + Number(Total_otrossi)
     let Saldo_Anticipo_por_Amortizar = Number((AnticiposPagadosxElCliente) - (AnticipoAmortizadoPorElCliente))
-    let Iva_Facturado = Number(0.19 * Number(ValorTotalFacturadoSinIVA))
-    let Facturacion_Pendiente_Pago = Number(Number(ValorTotalFacturadoSinIVA) + Number(Iva_Facturado)) - Number((RetencionesYDescuentos)) - Number(FacturasPagadsPorElCliente) - Number((AnticiposPagadosxElCliente) - Number(Saldo_Anticipo_por_Amortizar))
+    let Facturacion_Pendiente_Pago = Number(Number(ValorTotalFacturadoSinIVA) + Number(ImpuestosE/100)) - Number((RetencionesYDescuentos)) - Number(FacturasPagadsPorElCliente) - Number((AnticiposPagadosxElCliente) - Number(Saldo_Anticipo_por_Amortizar) - Number(RetencionesYDescuentos))
     let Plazo_Contractual = moment(FechafC).diff(moment(FechaiC,),'days')
     let Plazo_Real = moment(FechafR).diff(moment(FechaiR,),'days')
+    let relacion = Number((Number(ValorTotalFacturadoSinIVA) / Number(Valor_Total_Contratado) )*100)
+    if( relacion <= 0.99 * 100) {
+      setEstadoo('En curso')
+    }else {
+      setEstadoo('Cerrado')
+    }
     try {
       await addDoc(collection(db, 'MaestroHistoricOE'), {
         Contratado:Contratado,
@@ -248,7 +262,7 @@ export const DatosProvider = ({ children }) => {
         PlazoReal:Plazo_Real,
         ParticipacionOPTIMA:(Number(ParticipacionOPTIMA)),
         ValorContratoSinIVA:(Number(ValorContratoSinIVA)),
-        IVA:(Number((0.19 * Number(ValorContratoSinIVA)))),
+        IVA:(Number(((ImpuestosE/100) * Number(ValorContratoSinIVA)))),
         OTROSSI1:Number(OTROSSI1),
         OTROSSI2:Number(OTROSSI2),
         OTROSSI3:Number(OTROSSI3),
@@ -271,7 +285,7 @@ export const DatosProvider = ({ children }) => {
         AnticipoContractual:((Number(PorcentAnticipoContractural /100) * Number(ValorContratoSinIVA))),
         AnticiposPagadosxElCliente:(Number(AnticiposPagadosxElCliente)),
         ValorTotalFacturadoSinIVA:(Number(ValorTotalFacturadoSinIVA)),
-        IVAFacturado:(Number(0.19 * Number(ValorTotalFacturadoSinIVA))),
+        IVAFacturado:(Number(ImpuestosE/100) * Number(ValorTotalFacturadoSinIVA)),
         RetegantiaPorcent:Number(RetegantiaPorcent),
         ValorReteGantia:(Number((Number(RetegantiaPorcent/100) * Number(ValorTotalFacturadoSinIVA)))),
         ValorPendientePorFacturarSinIVA:(Number(Valor_Total_Contratado - ValorTotalFacturadoSinIVA)),
@@ -279,9 +293,10 @@ export const DatosProvider = ({ children }) => {
         AnticipoAmortizadoPorElCliente:(Number(AnticipoAmortizadoPorElCliente)),
         SaldoAnticipoPorAmortizar:(Number(Saldo_Anticipo_por_Amortizar)),
         RetencionesYDescuentos:(Number(RetencionesYDescuentos)),
-        FacturacionPendientedePago:(Facturacion_Pendiente_Pago)-Number(RetencionesYDescuentos),
+        FacturacionPendientedePago:(Facturacion_Pendiente_Pago),
         AnticiposPendientesDePago:(Number((Number(PorcentAnticipoContractural/100) * Number(ValorContratoSinIVA)) - Number(AnticiposPagadosxElCliente))),
         RelacionFacturadoContratado:Number((Number(ValorTotalFacturadoSinIVA) / Number(Valor_Total_Contratado) )*100),
+        Estado:Estadoo
         /*
         Contratado:Contratado,
       Ejecutado:Ejecutado,
@@ -352,9 +367,15 @@ export const DatosProvider = ({ children }) => {
     let Valor_Total_Contratado = Number(ValorContratoSinIVA) + Number(Total_otrossi)
     let Saldo_Anticipo_por_Amortizar = Number((AnticiposPagadosxElCliente) - (AnticipoAmortizadoPorElCliente))
     let Iva_Facturado = Number(0.19 * Number(ValorTotalFacturadoSinIVA))
-    let Facturacion_Pendiente_Pago = Number(Number(ValorTotalFacturadoSinIVA) + Number(Iva_Facturado)) - Number((RetencionesYDescuentos)) - Number(FacturasPagadsPorElCliente) - Number((AnticiposPagadosxElCliente) - Number(Saldo_Anticipo_por_Amortizar))
+    let Facturacion_Pendiente_Pago = Number(Number(ValorTotalFacturadoSinIVA) + Number(Iva_Facturado)) - Number((RetencionesYDescuentos)) - Number(FacturasPagadsPorElCliente) - Number((AnticiposPagadosxElCliente) - Number(Saldo_Anticipo_por_Amortizar) - Number(RetencionesYDescuentos))
     let Plazo_Contractual = moment(FechafC).diff(moment(FechaiC,),'days')
     let Plazo_Real = moment(FechafR).diff(moment(FechaiR,),'days')
+    let relacion = Number((Number(ValorTotalFacturadoSinIVA) / Number(Valor_Total_Contratado) )*100)
+    if( relacion <= 0.99 * 100) {
+      setEstadoo('En curso')
+    }else {
+      setEstadoo('Cerrado')
+    }
     const taskDocRef = doc(db, 'MaestroHistoricO', id)
     try{
       await updateDoc(taskDocRef, {
@@ -411,9 +432,10 @@ export const DatosProvider = ({ children }) => {
         AnticipoAmortizadoPorElCliente:(Number(AnticipoAmortizadoPorElCliente)),
         SaldoAnticipoPorAmortizar:(Number(Saldo_Anticipo_por_Amortizar)),
         RetencionesYDescuentos:(Number(RetencionesYDescuentos)),
-        FacturacionPendientedePago:(Facturacion_Pendiente_Pago)-Number(RetencionesYDescuentos),
+        FacturacionPendientedePago:(Facturacion_Pendiente_Pago),
         AnticiposPendientesDePago:(Number((Number(PorcentAnticipoContractural/100) * Number(ValorContratoSinIVA)) - Number(AnticiposPagadosxElCliente))),
         RelacionFacturadoContratado:Number((Number(ValorTotalFacturadoSinIVA) / Number(Valor_Total_Contratado) )*100),
+        Estado:Estadoo
       })
     } catch (err) {
       alert(err)
@@ -423,11 +445,16 @@ export const DatosProvider = ({ children }) => {
     let Total_otrossi = Number((Number(OTROSSI1)+Number(OTROSSI2)+Number(OTROSSI3)+Number(OTROSSI4)+Number(OTROSSI5)+Number(OTROSSI6)+Number(OTROSSI7)+Number(OTROSSI8)+Number(OTROSSI9)+Number(OTROSSI10)+Number(OTROSSI11)+Number(OTROSSI12)))
     let Valor_Total_Contratado = Number(ValorContratoSinIVA) + Number(Total_otrossi)
     let Saldo_Anticipo_por_Amortizar = Number((AnticiposPagadosxElCliente) - (AnticipoAmortizadoPorElCliente))
-    let Iva_Facturado = Number(0.19 * Number(ValorTotalFacturadoSinIVA))
-    let Facturacion_Pendiente_Pago = Number(Number(ValorTotalFacturadoSinIVA) + Number(Iva_Facturado)) - Number((RetencionesYDescuentos)) - Number(FacturasPagadsPorElCliente) - Number((AnticiposPagadosxElCliente) - Number(Saldo_Anticipo_por_Amortizar))
+    let Facturacion_Pendiente_Pago = Number(Number(ValorTotalFacturadoSinIVA) + Number(ImpuestosE/100)) - Number((RetencionesYDescuentos)) - Number(FacturasPagadsPorElCliente) - Number((AnticiposPagadosxElCliente) - Number(Saldo_Anticipo_por_Amortizar) - Number(RetencionesYDescuentos))
     let Plazo_Contractual = moment(FechafC).diff(moment(FechaiC,),'days')
     let Plazo_Real = moment(FechafR).diff(moment(FechaiR,),'days')
-    const taskDocRef = doc(db, 'MaestroHistoricO', id)
+    let relacion = Number((Number(ValorTotalFacturadoSinIVA) / Number(Valor_Total_Contratado) )*100)
+    if( relacion <= 0.99 * 100) {
+      setEstadoo('En curso')
+    }else {
+      setEstadoo('Cerrado')
+    }
+    const taskDocRef = doc(db, 'MaestroHistoricOE', id)
     try{
       await updateDoc(taskDocRef, {
         Contratado:Contratado,
@@ -452,7 +479,7 @@ export const DatosProvider = ({ children }) => {
         PlazoReal:Plazo_Real,
         ParticipacionOPTIMA:(Number(ParticipacionOPTIMA)),
         ValorContratoSinIVA:(Number(ValorContratoSinIVA)),
-        IVA:(Number((0.19 * Number(ValorContratoSinIVA)))),
+        IVA:(Number((ImpuestosE/100 * Number(ValorContratoSinIVA)))),
         OTROSSI1:Number(OTROSSI1),
         OTROSSI2:Number(OTROSSI2),
         OTROSSI3:Number(OTROSSI3),
@@ -475,7 +502,7 @@ export const DatosProvider = ({ children }) => {
         AnticipoContractual:((Number(PorcentAnticipoContractural /100) * Number(ValorContratoSinIVA))),
         AnticiposPagadosxElCliente:(Number(AnticiposPagadosxElCliente)),
         ValorTotalFacturadoSinIVA:(Number(ValorTotalFacturadoSinIVA)),
-        IVAFacturado:(Number(0.19 * Number(ValorTotalFacturadoSinIVA))),
+        IVAFacturado:(Number(ImpuestosE/100 * Number(ValorTotalFacturadoSinIVA))),
         RetegantiaPorcent:Number(RetegantiaPorcent),
         ValorReteGantia:(Number((Number(RetegantiaPorcent/100) * Number(ValorTotalFacturadoSinIVA)))),
         ValorPendientePorFacturarSinIVA:(Number(Valor_Total_Contratado - ValorTotalFacturadoSinIVA)),
@@ -483,9 +510,10 @@ export const DatosProvider = ({ children }) => {
         AnticipoAmortizadoPorElCliente:(Number(AnticipoAmortizadoPorElCliente)),
         SaldoAnticipoPorAmortizar:(Number(Saldo_Anticipo_por_Amortizar)),
         RetencionesYDescuentos:(Number(RetencionesYDescuentos)),
-        FacturacionPendientedePago:(Facturacion_Pendiente_Pago)-Number(RetencionesYDescuentos),
+        FacturacionPendientedePago:(Facturacion_Pendiente_Pago),
         AnticiposPendientesDePago:(Number((Number(PorcentAnticipoContractural/100) * Number(ValorContratoSinIVA)) - Number(AnticiposPagadosxElCliente))),
         RelacionFacturadoContratado:Number((Number(ValorTotalFacturadoSinIVA) / Number(Valor_Total_Contratado) )*100),
+        Estado:Estadoo
       })
     } catch (err) {
       alert(err)
@@ -501,7 +529,7 @@ export const DatosProvider = ({ children }) => {
     }
   }
   const EliminarE = async (id) => {
-    const taskDocRef = doc(db, 'MaestroHistoricO', id)
+    const taskDocRef = doc(db, 'MaestroHistoricOE', id)
     try{
       await deleteDoc(taskDocRef)
     } catch (err) {
@@ -627,8 +655,10 @@ export const DatosProvider = ({ children }) => {
       ActualizarE,
       datosMaestroE, 
       setDatosMaestroE,
-      EliminarE
-
+      EliminarE,
+      ImpuestosE, 
+      setImpuestosE,
+      Estadoo, setEstadoo
 
        }}>
       {children}
