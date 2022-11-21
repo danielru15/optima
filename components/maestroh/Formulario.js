@@ -171,8 +171,6 @@ Consecutivo,
     let id = query.id
     e.preventDefault()
       ActualizarE(id)
-      push('/Maestro-historico')
-    
   }
 
  

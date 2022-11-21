@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
 import { useRef } from 'react'
+import { useDownloadExcel } from "react-export-table-to-excel";
 import { Button, Card, CardContent, Grid,  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, Box, InputLabel, FormLabel, FormControl, Select, MenuItem } from '@mui/material'
 
 
@@ -16,6 +17,14 @@ const InformeCard = ({datosMaestro,formatodivisa,titulo}) => {
     const Coordinador = [...new Set(datosMaestro.map((Val) => Val.Coordinador))]
     const Seudonimo = [...new Set(datosMaestro.map((Val) => Val.Seudonimo))]
     const Estado = ['Cerrado','Cierre administrativo', 'En curso']
+
+    const tableRef = useRef(null);
+
+  const { onDownload } = useDownloadExcel({
+    currentTableRef: tableRef.current,
+    filename: "Informe",
+    sheet: "Infome",
+  });
    //Function filtro
 const filtrar = (e) => {
     e.preventDefault()
@@ -314,9 +323,10 @@ const filtrar = (e) => {
           </FormControl>
           <Button variant="contained" color='success' type="submit" >Filtrar</Button>
           <Button variant="contained" color='error' onClick={limpiar} >Limpiar</Button>
+          <Button onClick={onDownload}variant="contained" color='warning' >Descargar</Button>
         </form>
         <TableContainer marginTop={3}>
-          <Table sx={{width:"max-content"}} aria-label="simple table">
+          <Table sx={{width:"max-content"}} aria-label="simple table" ref={tableRef}>
             <TableHead>
               <TableRow>
                 <TableCell style={{

@@ -43,7 +43,7 @@ const Extranjeros = () => {
     {field:"Contratado", headerName: "Contratado", width:100},
     {field:"Ejecutado", headerName: "Ejecutado En"},
     {field:"Consecutivo", headerName: "Consecutivo"},
-    {field:"Oferta", headerName: "Oferta", width:200},
+    {field:"Oferta", headerName: "Oferta", width:400},
     {field:"LineaNegocio", headerName: "Linea de Negocio"},
     {field:"Seudonimo", headerName: "Seudonimo", width:300},
     {field:"Nombre", headerName: "Nombre del proyecto", width:800},

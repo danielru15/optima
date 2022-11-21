@@ -7,8 +7,9 @@ import React from "react";
 import { DataGrid, renderActionsCell } from '@mui/x-data-grid';
 import TextField from "@mui/material/TextField";
 import { Chip } from "@mui/material";
-import CircularProgress from '@mui/material/CircularProgress';
-
+import { useRef } from "react";
+import { useDownloadExcel } from "react-export-table-to-excel";
+import { downloadExcel } from "react-export-table-to-excel";
 
 
 const Index = () => {
@@ -16,7 +17,12 @@ const Index = () => {
   const [Search, setSearch] = useState('')
   const {datosMaestro,Eliminar,formatodivisa} = useContext(DatosContext)
   let datos = []
+  const tableRef = useRef(null);
 
+ 
+
+
+  
   const Searcher = (e) => {
     setSearch(e.target.value)
   }
@@ -42,7 +48,7 @@ const Index = () => {
     {field:"Contratado", headerName: "Contratado", width:100},
     {field:"Ejecutado", headerName: "Ejecutado En"},
     {field:"Consecutivo", headerName: "Consecutivo"},
-    {field:"Oferta", headerName: "Oferta", width:200},
+    {field:"Oferta", headerName: "Oferta", width:400},
     {field:"LineaNegocio", headerName: "Linea de Negocio"},
     {field:"Seudonimo", headerName: "Seudonimo", width:300},
     {field:"Nombre", headerName: "Nombre del proyecto", width:800},
@@ -97,6 +103,12 @@ const Index = () => {
     {field: "RelacionFacturadoContratado",headerName: "Relación Facturado / Contratado",width: 200,valueFormatter: ({ value }) => `${Math.round(value)}%`, },
     {field:"Estado", headerName: "Estado", renderCell:(params) => <Chip label={params.value} color={params.value === 'En curso' ?  'success' : params.value === 'Cerrado' ?  'error' : 'warning'} /> },
   ]
+  
+  const { onDownload } = useDownloadExcel({
+    currentTableRef: tableRef.current,
+    filename: "Informe",
+    sheet: "Infome",
+  });
   return (
     <Layout>
       <p>Maestro Historico Nacionales</p>
@@ -110,7 +122,7 @@ const Index = () => {
       <TextField fullWidth margin="dense"  value={Search} onChange={Searcher} label="Buscar" />
       <br />
       <div style={{ height: 500, width: "100%" }}>
-      <DataGrid
+      <DataGrid 
         rows={datos}
         columns={columns}
         pageSize={6}
