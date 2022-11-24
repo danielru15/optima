@@ -13,6 +13,7 @@ const Informe = () => {
       titulo={'Informe Nacionales'}
       datosMaestro={datosMaestro}
       formatodivisa={formatodivisa}
+      name={'Informe Nacionales'}
     />
     </Layout>
   )

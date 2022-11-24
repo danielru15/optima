@@ -3,17 +3,27 @@ import Layout from '../../components/layout/Layout'
 import {useContext, useState} from 'react'
 import { DatosContext } from "../../Context/datosContext"
 import { useRouter } from "next/router";
+import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { DataGrid, renderCell } from '@mui/x-data-grid';
 import { Chip } from "@mui/material";
-
+import * as XLSX from 'xlsx';
 
 const Extranjeros = () => {
   const {datosMaestroE,EliminarE} = useContext(DatosContext)
   const [Search, setSearch] = useState('')
   const router = useRouter();
   let datos = []
+
+  const downloadxls = (e, data) => {
+    e.preventDefault();
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "OI-SGI-F-0094 EXTRANJEROS");
+    /* generate XLSX file and send to client */
+    XLSX.writeFile(wb, "Maestro Historico Extranjeros.xlsx");
+  };
 
   const Searcher = (e) => {
     setSearch(e.target.value)
@@ -37,9 +47,9 @@ const Extranjeros = () => {
   }
 
   const columns = [
-    {headerName: "Acciones", width:200, type:"actions", renderCell:(params)=> <div>
+    {headerName: "Acciones", width:200, type:"actions", renderCell:(params)=> <ButtonGroup>
       <Button variant="contained" size="small" color="success" onClick={() => router.push(`/Maestro-historico/${params.row.id}`)}>Editar</Button><Button onClick={() => EliminarE(params.id)} size="small" variant="contained" color="error">Eliminar</Button>
-    </div>},
+    </ButtonGroup>},
     {field:"Contratado", headerName: "Contratado", width:100},
     {field:"Ejecutado", headerName: "Ejecutado En"},
     {field:"Consecutivo", headerName: "Consecutivo"},
@@ -102,10 +112,22 @@ const Extranjeros = () => {
   return (
     <Layout>
       <p>Maestro Historico Extranjeros</p>
+      <ButtonGroup variant="contained" aria-label="small button group" size="small">
       <Button
         variant="contained"
         onClick={() => router.push("/Maestro-historico/crearE")}
       >Crear</Button>
+      <Button
+      color="success"
+        variant="contained"
+        onClick={(e) => {
+          downloadxls(e, datos);
+        }}
+      >
+        Descargar
+      </Button>
+      <Button color='secondary'>Importar</Button>
+      </ButtonGroup>
       <br />
       <TextField fullWidth margin="dense"  value={Search} onChange={Searcher} label="Buscar" />
       <br />
@@ -114,7 +136,7 @@ const Extranjeros = () => {
         rows={datos}
         columns={columns}
         pageSize={6}
-        rowsPerPageOptions={[6,10,25,50]}
+        rowsPerPageOptions={[6,10,25,50,200]}
       />
       </div>
     </Layout>

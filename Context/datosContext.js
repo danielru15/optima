@@ -3,13 +3,14 @@ import Alert from '@mui/material/Alert';
 export { useContext } from "react";
 import { auth, db} from '../firebase'
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
-import { collection,onSnapshot, orderBy, query,addDoc, Timestamp,doc, getDocs,updateDoc,deleteDoc} from "firebase/firestore";
+import { collection,onSnapshot, orderBy, query,addDoc, Timestamp,doc, getDocs,updateDoc,deleteDoc,setDoc} from "firebase/firestore";
 import moment from "moment/moment";
-
+import * as XLSX from 'xlsx';
 export const DatosContext = createContext();
 
 
 export const DatosProvider = ({ children }) => {
+  const [first, setfirst] = useState([])
   const [User, setUser] = useState('')
   const [Contratado, setContratado] = useState('')
   const [Ejecutado, setEjecutado] = useState('')
@@ -536,6 +537,20 @@ export const DatosProvider = ({ children }) => {
       alert(err)
     }
   }
+
+  const CrearDatosF = async (first) => {
+    console.log(first)
+    first.forEach((obj) => {
+      try {
+      addDoc(collection(db, 'Factura'), {
+        Factura:'',
+      })
+    }catch (err) {
+      console.log(err)
+    }
+  });
+   
+  }
   // Mostrar Datos
   useEffect(() => {
     const E = query(collection(db, 'MaestroHistoricOE') )
@@ -543,7 +558,63 @@ export const DatosProvider = ({ children }) => {
     onSnapshot(E, (querySnapshot) => {
       setDatosMaestroE(querySnapshot.docs.map(doc => ({
         id: doc.id,
-        ...doc.data()
+        Contratado:doc.data().Contratado,
+        Ejecutado:doc.data().Ejecutado,
+        Consecutivo:doc.data().Consecutivo,
+        Oferta:doc.data().Oferta,
+        LineaNegocio:doc.data().LineaNegocio,
+        Seudonimo:doc.data().Seudonimo,
+        Nombre:doc.data().Nombre,
+        DescripcionBreve:doc.data().DescripcionBreve,
+        ClienteDirecto:doc.data().ClienteDirecto,
+        ContactoCliente:doc.data().ContactoCliente,
+        ClienteFinal:doc.data().ClienteFinal,
+        Director:doc.data().Director,
+        Coordinador:doc.data().Coordinador,
+        Contrato:doc.data().Contrato,
+        FechaInicioContractual:doc.data().FechaInicioContractual,
+        FechaFinalContractual:doc.data().FechaFinalContractual,
+        PlazoContractual:doc.data().PlazoContractual,
+        FechaInicioReal:doc.data().FechaInicioReal,
+        FechaFinalReal:doc.data().FechaFinalReal,
+        PlazoReal:doc.data().PlazoReal,
+        ParticipacionOPTIMA:doc.data().ParticipacionOPTIMA,
+        ValorContratoSinIVA:doc.data().ValorContratoSinIVA,
+        IVA:doc.data().IVA,
+        OTROSSI1:doc.data().OTROSSI1,
+        OTROSSI2:doc.data().OTROSSI2,
+        OTROSSI3:doc.data().OTROSSI3,
+        OTROSSI4:doc.data().OTROSSI4,
+        OTROSSI5:doc.data().OTROSSI5,
+        OTROSSI6:doc.data().OTROSSI6,
+        OTROSSI7:doc.data().OTROSSI7,
+        OTROSSI8:doc.data().OTROSSI8,
+        OTROSSI9:doc.data().OTROSSI9,
+        OTROSSI10:doc.data().OTROSSI10,
+        OTROSSI11:doc.data().OTROSSI11,
+        OTROSSI12:doc.data().OTROSSI12,
+        TotalOtrossi:doc.data().TotalOtrossi,
+        ValorTotalContratado:doc.data().ValorTotalContratado,
+        PCO:doc.data().PCO,
+        Administracion:doc.data().Administracion,
+        Imprevistos:doc.data().Imprevistos,
+        UtilidadBruta:doc.data().UtilidadBruta,
+        PorcentAnticipoContractural:doc.data().PorcentAnticipoContractural,
+        AnticipoContractual:doc.data().AnticipoContractual,
+        AnticiposPagadosxElCliente:doc.data().AnticiposPagadosxElCliente,
+        ValorTotalFacturadoSinIVA:doc.data().ValorTotalFacturadoSinIVA,
+        IVAFacturado:doc.data().IVAFacturado,
+        RetegantiaPorcent:doc.data().RetegantiaPorcent,
+        ValorReteGantia:doc.data().ValorReteGantia,
+        ValorPendientePorFacturarSinIVA:doc.data().ValorPendientePorFacturarSinIVA,
+        FacturasPagadsPorElCliente:doc.data().FacturasPagadsPorElCliente,
+        AnticipoAmortizadoPorElCliente:doc.data().AnticipoAmortizadoPorElCliente,
+        SaldoAnticipoPorAmortizar:doc.data().SaldoAnticipoPorAmortizar,
+        RetencionesYDescuentos:doc.data().RetencionesYDescuentos,
+        FacturacionPendientedePago:doc.data().FacturacionPendientedePago,
+        AnticiposPendientesDePago:doc.data().AnticiposPendientesDePago,
+        RelacionFacturadoContratado:doc.data().RelacionFacturadoContratado,
+        Estado:doc.data().Estado
       })))
     })
     
@@ -551,7 +622,64 @@ export const DatosProvider = ({ children }) => {
     onSnapshot(q, (querySnapshot) => {
       setDatosMaestro(querySnapshot.docs.map(doc => ({
         id: doc.id,
-        ...doc.data()
+        Contratado:doc.data().Contratado,
+        Ejecutado:doc.data().Ejecutado,
+        Consecutivo:doc.data().Consecutivo,
+        Oferta:doc.data().Oferta,
+        LineaNegocio:doc.data().LineaNegocio,
+        Seudonimo:doc.data().Seudonimo,
+        Nombre:doc.data().Nombre,
+        DescripcionBreve:doc.data().DescripcionBreve,
+        ClienteDirecto:doc.data().ClienteDirecto,
+        ContactoCliente:doc.data().ContactoCliente,
+        ClienteFinal:doc.data().ClienteFinal,
+        Director:doc.data().Director,
+        Coordinador:doc.data().Coordinador,
+        Contrato:doc.data().Contrato,
+        FechaInicioContractual:doc.data().FechaInicioContractual,
+        FechaFinalContractual:doc.data().FechaFinalContractual,
+        PlazoContractual:doc.data().PlazoContractual,
+        FechaInicioReal:doc.data().FechaInicioReal,
+        FechaFinalReal:doc.data().FechaFinalReal,
+        PlazoReal:doc.data().PlazoReal,
+        ParticipacionOPTIMA:doc.data().ParticipacionOPTIMA,
+        ValorContratoSinIVA:doc.data().ValorContratoSinIVA,
+        IVA:doc.data().IVA,
+        OTROSSI1:doc.data().OTROSSI1,
+        OTROSSI2:doc.data().OTROSSI2,
+        OTROSSI3:doc.data().OTROSSI3,
+        OTROSSI4:doc.data().OTROSSI4,
+        OTROSSI5:doc.data().OTROSSI5,
+        OTROSSI6:doc.data().OTROSSI6,
+        OTROSSI7:doc.data().OTROSSI7,
+        OTROSSI8:doc.data().OTROSSI8,
+        OTROSSI9:doc.data().OTROSSI9,
+        OTROSSI10:doc.data().OTROSSI10,
+        OTROSSI11:doc.data().OTROSSI11,
+        OTROSSI12:doc.data().OTROSSI12,
+        TotalOtrossi:doc.data().TotalOtrossi,
+        ValorTotalContratado:doc.data().ValorTotalContratado,
+        PCO:doc.data().PCO,
+        Administracion:doc.data().Administracion,
+        Imprevistos:doc.data().Imprevistos,
+        UtilidadBruta:doc.data().UtilidadBruta,
+        PorcentAnticipoContractural:doc.data().PorcentAnticipoContractural,
+        AnticipoContractual:doc.data().AnticipoContractual,
+        AnticiposPagadosxElCliente:doc.data().AnticiposPagadosxElCliente,
+        ValorTotalFacturadoSinIVA:doc.data().ValorTotalFacturadoSinIVA,
+        IVAFacturado:doc.data().IVAFacturado,
+        RetegantiaPorcent:doc.data().RetegantiaPorcent,
+        ValorReteGantia:doc.data().ValorReteGantia,
+        ValorPendientePorFacturarSinIVA:doc.data().ValorPendientePorFacturarSinIVA,
+        FacturasPagadsPorElCliente:doc.data().FacturasPagadsPorElCliente,
+        AnticipoAmortizadoPorElCliente:doc.data().AnticipoAmortizadoPorElCliente,
+        SaldoAnticipoPorAmortizar:doc.data().SaldoAnticipoPorAmortizar,
+        RetencionesYDescuentos:doc.data().RetencionesYDescuentos,
+        FacturacionPendientedePago:doc.data().FacturacionPendientedePago,
+        AnticiposPendientesDePago:doc.data().AnticiposPendientesDePago,
+        RelacionFacturadoContratado:doc.data().RelacionFacturadoContratado,
+        Estado:doc.data().Estado
+      
       })))
     })
     
@@ -560,6 +688,8 @@ export const DatosProvider = ({ children }) => {
 
   return (
     <DatosContext.Provider value={{
+      CrearDatosF,
+      first, setfirst,
       formatodivisa,
       Eliminar,
       Actualizar,

@@ -1,10 +1,10 @@
 import React, {useState} from 'react'
 import { useRef } from 'react'
-import { useDownloadExcel } from "react-export-table-to-excel";
+import ButtonGroup from '@mui/material/ButtonGroup';
 import { Button, Card, CardContent, Grid,  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, Box, InputLabel, FormLabel, FormControl, Select, MenuItem } from '@mui/material'
+import * as XLSX from 'xlsx';
 
-
-const InformeCard = ({datosMaestro,formatodivisa,titulo}) => {
+const InformeCard = ({datosMaestro,formatodivisa,titulo, name}) => {
     const [Linea, setLinea] = useState('')
     const [Coord, setCoord] = useState('')
     const [Seudonimoo, setSeudonimoo] = useState('')
@@ -20,12 +20,17 @@ const InformeCard = ({datosMaestro,formatodivisa,titulo}) => {
 
     const tableRef = useRef(null);
 
-  const { onDownload } = useDownloadExcel({
-    currentTableRef: tableRef.current,
-    filename: "Informe",
-    sheet: "Infome",
-  });
+    const downloadxls = (e, data) => {
+      e.preventDefault();
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, `${name}`);
+      /* generate XLSX file and send to client */
+      XLSX.writeFile(wb, "Informe.xlsx");
+    };
    //Function filtro
+
+   
 const filtrar = (e) => {
     e.preventDefault()
     if(Seudonimo !== '' || Linea !== '' || FechaInicioC !== '' ||  FechaFinC !== '' || Coord !== '' || Estade !== ''){
@@ -321,9 +326,11 @@ const filtrar = (e) => {
            }
           </Select>
           </FormControl>
-          <Button variant="contained" color='success' type="submit" >Filtrar</Button>
-          <Button variant="contained" color='error' onClick={limpiar} >Limpiar</Button>
-          <Button onClick={onDownload}variant="contained" color='warning' >Descargar</Button>
+          <ButtonGroup>
+            <Button variant="contained" color='success' type="submit" >Filtrar</Button>
+            <Button variant="contained" color='error' onClick={limpiar} >Limpiar</Button>
+            <Button onClick={(e) => {downloadxls(e, filtro?filtro:datosMaestro)}} variant="contained" color='warning' >Descargar</Button>
+          </ButtonGroup>
         </form>
         <TableContainer marginTop={3}>
           <Table sx={{width:"max-content"}} aria-label="simple table" ref={tableRef}>

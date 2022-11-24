@@ -16,6 +16,7 @@ const InformeExtranjeros = () => {
         titulo={'Informe Extranjeros'}
         datosMaestro={datosMaestroE}
         formatodivisa={currencyFormatter}
+        name={'Informe Extranjeros'}
       />
     </Layout>
   )

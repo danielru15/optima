@@ -2,15 +2,14 @@ import Layout from "../../components/layout/Layout";
 import {useContext, useState} from 'react'
 import { DatosContext } from "../../Context/datosContext"
 import { useRouter } from "next/router";
+import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from "@mui/material/Button";
 import React from "react";
 import { DataGrid, renderActionsCell } from '@mui/x-data-grid';
 import TextField from "@mui/material/TextField";
 import { Chip } from "@mui/material";
 import { useRef } from "react";
-import { useDownloadExcel } from "react-export-table-to-excel";
-import { downloadExcel } from "react-export-table-to-excel";
-
+import * as XLSX from 'xlsx';
 
 const Index = () => {
   const router = useRouter();
@@ -19,8 +18,15 @@ const Index = () => {
   let datos = []
   const tableRef = useRef(null);
 
- 
 
+  const downloadxls = (e, data) => {
+    e.preventDefault();
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "OI-SGI-F-0094 NACIONALES V1");
+    /* generate XLSX file and send to client */
+    XLSX.writeFile(wb, "Maestro historico Nacionales.xlsx");
+  };
 
   
   const Searcher = (e) => {
@@ -42,9 +48,9 @@ const Index = () => {
   }
 
   const columns = [
-    {headerName: "Acciones", width:200, type:"actions", renderCell:(params)=> <div>
+    {headerName: "Acciones", width:200, type:"actions", renderCell:(params)=> <ButtonGroup>
       <Button variant="contained" size="small" color="success" onClick={() => router.push(`/Maestro-historico/${params.row.id}`)}>Editar</Button><Button onClick={() => Eliminar(params.id)} size="small" variant="contained" color="error">Eliminar</Button>
-    </div>},
+    </ButtonGroup>},
     {field:"Contratado", headerName: "Contratado", width:100},
     {field:"Ejecutado", headerName: "Ejecutado En"},
     {field:"Consecutivo", headerName: "Consecutivo"},
@@ -104,20 +110,28 @@ const Index = () => {
     {field:"Estado", headerName: "Estado", renderCell:(params) => <Chip label={params.value} color={params.value === 'En curso' ?  'success' : params.value === 'Cerrado' ?  'error' : 'warning'} /> },
   ]
   
-  const { onDownload } = useDownloadExcel({
-    currentTableRef: tableRef.current,
-    filename: "Informe",
-    sheet: "Infome",
-  });
+ 
   return (
     <Layout>
       <p>Maestro Historico Nacionales</p>
+      <ButtonGroup variant="contained" aria-label="small button group" size="small">
       <Button
         variant="contained"
         onClick={() => router.push("/Maestro-historico/Crear")}
       >
         Crear
       </Button>
+      <Button
+      color="success"
+        variant="contained"
+        onClick={(e) => {
+          downloadxls(e, datos);
+        }}
+      >
+        Descargar
+      </Button>
+      <Button color='secondary'>Importar</Button>
+    </ButtonGroup>
       <br />
       <TextField fullWidth margin="dense"  value={Search} onChange={Searcher} label="Buscar" />
       <br />
@@ -126,7 +140,7 @@ const Index = () => {
         rows={datos}
         columns={columns}
         pageSize={6}
-        rowsPerPageOptions={[6,10,25,50]}
+        rowsPerPageOptions={[6,10,25,50,200]}
       />
           
             
