@@ -124,7 +124,7 @@ const Index = () => {
       color="success"
         variant="contained"
         onClick={(e) => {
-          downloadxls(e, datos);
+          downloadxls(e, datosMaestro);
         }}
       >
         Descargar
