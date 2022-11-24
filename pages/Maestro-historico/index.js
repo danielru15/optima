@@ -19,14 +19,6 @@ const Index = () => {
   const tableRef = useRef(null);
 
 
-  const downloadxls = (e, data) => {
-    e.preventDefault();
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "OI-SGI-F-0094 NACIONALES V1");
-    /* generate XLSX file and send to client */
-    XLSX.writeFile(wb, "Maestro historico Nacionales.xlsx");
-  };
 
   
   const Searcher = (e) => {
@@ -109,7 +101,14 @@ const Index = () => {
     {field: "RelacionFacturadoContratado",headerName: "Relación Facturado / Contratado",width: 200,valueFormatter: ({ value }) => `${Math.round(value)}%`, },
     {field:"Estado", headerName: "Estado", renderCell:(params) => <Chip label={params.value} color={params.value === 'En curso' ?  'success' : params.value === 'Cerrado' ?  'error' : 'warning'} /> },
   ]
-  
+  const downloadxls = (e, data) => {
+    e.preventDefault();
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "OI-SGI-F-0094 NACIONALES V1");
+    /* generate XLSX file and send to client */
+    XLSX.writeFile(wb, "Maestro historico Nacionales.xlsx");
+  };
  
   return (
     <Layout>
