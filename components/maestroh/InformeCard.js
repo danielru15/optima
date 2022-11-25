@@ -26,7 +26,7 @@ const InformeCard = ({datosMaestro,formatodivisa,titulo, name}) => {
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, `${name}`);
       /* generate XLSX file and send to client */
-      XLSX.writeFile(wb, "Informe.xlsx");
+      XLSX.writeFile(wb, "Informe.xls");
     };
    //Function filtro
 

@@ -108,7 +108,7 @@ const Index = () => {
   ]
   
   const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-    const fileExtension = '.xls';
+    const fileExtension = '.XLSX';
 
     const exportToCSV = (a) => {
         const ws = XLSX.utils.json_to_sheet(a);
