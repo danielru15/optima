@@ -101,7 +101,7 @@ const Index = () => {
     {field:"Estado", headerName: "Estado", renderCell:(params) => <Chip label={params.value} color={params.value === 'En curso' ?  'success' : params.value === 'Cerrado' ?  'error' : 'warning'} /> },
   ]
   
-    const downloadxls = (datosMaestro) => {
+    const downloadxls = () => {
       const ws = utils.json_to_sheet(datosMaestro);
       const wb = utils.book_new();
       utils.book_append_sheet(wb, ws, "OI-SGI-F-0094 NACIONALES V1");
