@@ -101,13 +101,13 @@ const Index = () => {
     {field: "RelacionFacturadoContratado",headerName: "Relación Facturado / Contratado",width: 200,valueFormatter: ({ value }) => `${Math.round(value)}%`, },
     {field:"Estado", headerName: "Estado", renderCell:(params) => <Chip label={params.value} color={params.value === 'En curso' ?  'success' : params.value === 'Cerrado' ?  'error' : 'warning'} /> },
   ]
-  const downloadxls = (e, datosMaestro) => {
+  const downloadxls = (e, columns) => {
     e.preventDefault();
-    const ws = XLSX.utils.json_to_sheet(datosMaestro);
+    const ws = XLSX.utils.json_to_sheet(columns);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "OI-SGI-F-0094 NACIONALES V1");
     /* generate XLSX file and send to client */
-    XLSX.writeFile(wb, "Maestro historico Nacionales.xlsx");
+    XLSX.writeFile(wb, 'Maestro historico Nacionales' + '.xlsx');
   };
  
   return (
@@ -124,7 +124,7 @@ const Index = () => {
       color="success"
         variant="contained"
         onClick={(e) => {
-          downloadxls(e, datosMaestro);
+          downloadxls(e, columns);
         }}
       >
         Descargar
