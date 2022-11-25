@@ -9,7 +9,7 @@ import { DataGrid, renderActionsCell } from '@mui/x-data-grid';
 import TextField from "@mui/material/TextField";
 import { Chip } from "@mui/material";
 import { useRef } from "react";
-import * as XLSX from 'xlsx';
+import {writeFileXLSX,json_to_sheet,utils,book_new} from 'xlsx';
 
 const Index = () => {
   const router = useRouter();
@@ -102,11 +102,11 @@ const Index = () => {
     {field:"Estado", headerName: "Estado", renderCell:(params) => <Chip label={params.value} color={params.value === 'En curso' ?  'success' : params.value === 'Cerrado' ?  'error' : 'warning'} /> },
   ]
   const downloadxls = () => {
-    let wb = XLSX.utils.book_new();
-    let ws = XLSX.utils.json_to_sheet(columns);
-    XLSX.utils.book_append_sheet(wb, ws, "OI-SGI-F-0094 NACIONALES V1");
+    const wb = utils.book_new()
+    const ws = utils.json_to_sheet(columns);
+    utils.book_append_sheet(wb, ws, "OI-SGI-F-0094 NACIONALES V1");
     /* generate XLSX file and send to client */
-    XLSX.writeFile(wb, 'Maestro historico Nacionales' + '.xlsx');
+    writeFileXLSX(wb, 'Maestro historico Nacionales' + '.xlsx');
   };
  
   return (
