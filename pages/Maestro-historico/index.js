@@ -26,7 +26,7 @@ const Index = () => {
 
   if (!Search) {
     datos = datosMaestro
-    console.log(datos)
+    console.log(datosMaestro)
   }else {
     datos = datosMaestro.filter((dato) => dato.Seudonimo.toLowerCase().includes(Search.toLocaleLowerCase())) 
   }
@@ -101,10 +101,14 @@ const Index = () => {
     {field:"Estado", headerName: "Estado", renderCell:(params) => <Chip label={params.value} color={params.value === 'En curso' ?  'success' : params.value === 'Cerrado' ?  'error' : 'warning'} /> },
   ]
   const downloadxls = useCallback(() => {
+   try {
     const ws = utils.json_to_sheet(datosMaestro);
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, "Data");
-    writeFileXLSX(wb, "SheetJSReactAoO.xlsx");
+    writeFileXLSX(wb, "SheetJSReactA1oO.xlsx");
+   } catch (error) {
+    console.log(error)
+   }
   }, [datosMaestro])
  
   return (
