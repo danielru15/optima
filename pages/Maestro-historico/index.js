@@ -101,11 +101,11 @@ const Index = () => {
     {field:"Estado", headerName: "Estado", renderCell:(params) => <Chip label={params.value} color={params.value === 'En curso' ?  'success' : params.value === 'Cerrado' ?  'error' : 'warning'} /> },
   ]
   const downloadxls = useCallback(() => {
-    const ws = utils.json_to_sheet(datos);
+    const ws = utils.json_to_sheet(datosMaestro);
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, "Data");
     writeFileXLSX(wb, "SheetJSReactAoO.xlsx");
-  }, [datos])
+  }, [datosMaestro])
  
   return (
     <Layout>
