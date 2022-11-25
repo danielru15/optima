@@ -22,7 +22,7 @@ const Extranjeros = () => {
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "OI-SGI-F-0094 EXTRANJEROS");
     /* generate XLSX file and send to client */
-    XLSX.writeFile(wb, "Maestro Historico Extranjeros.xlsx");
+    XLSX.writeFile(wb, "Maestro Historico Extranjeros.xls");
   };
 
   const Searcher = (e) => {

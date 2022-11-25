@@ -8,8 +8,7 @@ import { DataGrid, renderActionsCell } from '@mui/x-data-grid';
 import TextField from "@mui/material/TextField";
 import { Chip } from "@mui/material";
 import { useRef } from "react";
-import * as FileSaver from 'file-saver';
-import * as XLSX from 'xlsx';
+import { read, utils, writeFileXLSX } from 'xlsx';
 
 const Index = () => {
   const router = useRouter();
@@ -32,12 +31,7 @@ const Index = () => {
     datos = datosMaestro.filter((dato) => dato.Seudonimo.toLowerCase().includes(Search.toLocaleLowerCase())) 
   }
   
-  let a = [
-    {
-    danieel:'aaa',
-    b:'c'
-  }
-]
+
   const usdPrice = {
     type: 'number',
     valueFormatter: ({ value }) => formatodivisa.format(value),
@@ -107,15 +101,11 @@ const Index = () => {
     {field:"Estado", headerName: "Estado", renderCell:(params) => <Chip label={params.value} color={params.value === 'En curso' ?  'success' : params.value === 'Cerrado' ?  'error' : 'warning'} /> },
   ]
   
-  const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-    const fileExtension = '.XLSX';
-
-    const exportToCSV = (a) => {
-        const ws = XLSX.utils.json_to_sheet(a);
-        const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
-        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-        const data = new Blob([excelBuffer], {type: fileType});
-        FileSaver.saveAs(data, 'xx1' + fileExtension);
+    const downloadxls = (datosMaestro) => {
+      const ws = utils.json_to_sheet(datosMaestro);
+      const wb = utils.book_new();
+      utils.book_append_sheet(wb, ws, "OI-SGI-F-0094 NACIONALES V1");
+      writeFileXLSX(wb, "Maestro Historico Nacionales.xls");
     }
 
  
@@ -132,7 +122,7 @@ const Index = () => {
       <Button
       color="success"
         variant="contained"
-        onClick={(e) => exportToCSV(a)}
+        onClick={downloadxls}
       >
         Descargar
       </Button>
