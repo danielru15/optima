@@ -1,10 +1,9 @@
+import React, {useContext, useState,useCallback} from 'react'
 import Layout from "../../components/layout/Layout";
-import {useContext, useState} from 'react'
 import { DatosContext } from "../../Context/datosContext"
 import { useRouter } from "next/router";
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from "@mui/material/Button";
-import React from "react";
 import { DataGrid, renderActionsCell } from '@mui/x-data-grid';
 import TextField from "@mui/material/TextField";
 import { Chip } from "@mui/material";
@@ -101,12 +100,12 @@ const Index = () => {
     {field: "RelacionFacturadoContratado",headerName: "Relación Facturado / Contratado",width: 200,valueFormatter: ({ value }) => `${Math.round(value)}%`, },
     {field:"Estado", headerName: "Estado", renderCell:(params) => <Chip label={params.value} color={params.value === 'En curso' ?  'success' : params.value === 'Cerrado' ?  'error' : 'warning'} /> },
   ]
-  const downloadxls = () => {
+  const downloadxls = useCallback(() => {
     const ws = utils.json_to_sheet(datos);
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, "Data");
     writeFileXLSX(wb, "SheetJSReactAoO.xlsx");
-  }
+  }, [datos])
  
   return (
     <Layout>
