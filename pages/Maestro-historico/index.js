@@ -101,12 +101,14 @@ const Index = () => {
     {field:"Estado", headerName: "Estado", renderCell:(params) => <Chip label={params.value} color={params.value === 'En curso' ?  'success' : params.value === 'Cerrado' ?  'error' : 'warning'} /> },
   ]
   
-    const downloadxls = () => {
-      const ws = utils.json_to_sheet(datosMaestro);
-      const wb = utils.book_new();
-      utils.book_append_sheet(wb, ws, "OI-SGI-F-0094 NACIONALES V1");
-      writeFileXLSX(wb, "Maestro Historico Nacionales.xls");
-    }
+    const downloadxls = (e, data) => {
+      e.preventDefault();
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "OI-SGI-F-0094 NACIONALES V1");
+      /* generate XLSX file and send to client */
+      XLSX.writeFile(wb, "Maestro Historico Nacionales.xls");
+    };
 
  
   return (
@@ -122,7 +124,9 @@ const Index = () => {
       <Button
       color="success"
         variant="contained"
-        onClick={downloadxls}
+        onClick={(e) => {
+          downloadxls(e, datos);
+        }}
       >
         Descargar
       </Button>
