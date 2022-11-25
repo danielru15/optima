@@ -32,7 +32,12 @@ const Index = () => {
     datos = datosMaestro.filter((dato) => dato.Seudonimo.toLowerCase().includes(Search.toLocaleLowerCase())) 
   }
   
-  
+  let a = [
+    {
+    danieel:'aaa',
+    b:'c'
+  }
+]
   const usdPrice = {
     type: 'number',
     valueFormatter: ({ value }) => formatodivisa.format(value),
@@ -105,8 +110,8 @@ const Index = () => {
   const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
     const fileExtension = '.xlsx';
 
-    const exportToCSV = (datosMaestro) => {
-        const ws = XLSX.utils.json_to_sheet(datosMaestro);
+    const exportToCSV = (a) => {
+        const ws = XLSX.utils.json_to_sheet(a);
         const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
         const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
         const data = new Blob([excelBuffer], {type: fileType});
@@ -127,7 +132,7 @@ const Index = () => {
       <Button
       color="success"
         variant="contained"
-        onClick={(e) => exportToCSV(datosMaestro)}
+        onClick={(e) => exportToCSV(a)}
       >
         Descargar
       </Button>
