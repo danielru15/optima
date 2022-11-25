@@ -8,7 +8,8 @@ import { DataGrid, renderActionsCell } from '@mui/x-data-grid';
 import TextField from "@mui/material/TextField";
 import { Chip } from "@mui/material";
 import { useRef } from "react";
-import {  utils, writeFileXLSX } from 'xlsx';
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
 
 const Index = () => {
   const router = useRouter();
@@ -100,16 +101,18 @@ const Index = () => {
     {field: "RelacionFacturadoContratado",headerName: "Relación Facturado / Contratado",width: 200,valueFormatter: ({ value }) => `${Math.round(value)}%`, },
     {field:"Estado", headerName: "Estado", renderCell:(params) => <Chip label={params.value} color={params.value === 'En curso' ?  'success' : params.value === 'Cerrado' ?  'error' : 'warning'} /> },
   ]
-  const downloadxls = useCallback(() => {
-   try {
-    const ws = utils.json_to_sheet(datosMaestro);
-    const wb = utils.book_new();
-    utils.book_append_sheet(wb, ws, "Data");
-    writeFileXLSX(wb, "SheetJSReactA1oO.xlsx");
-   } catch (error) {
-    console.log(error)
-   }
-  }, [datosMaestro])
+  
+  const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+    const fileExtension = '.xlsx';
+
+    const exportToCSV = (datosMaestro) => {
+        const ws = XLSX.utils.json_to_sheet(datosMaestro);
+        const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        const data = new Blob([excelBuffer], {type: fileType});
+        FileSaver.saveAs(data, 'xx' + fileExtension);
+    }
+
  
   return (
     <Layout>
@@ -124,7 +127,7 @@ const Index = () => {
       <Button
       color="success"
         variant="contained"
-        onClick={downloadxls}
+        onClick={(e) => exportToCSV(datosMaestro)}
       >
         Descargar
       </Button>
