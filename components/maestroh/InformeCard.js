@@ -3,6 +3,7 @@ import { useRef } from 'react'
 import ButtonGroup from '@mui/material/ButtonGroup';
 import { Button, Card, CardContent, Grid,  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, Box, InputLabel, FormLabel, FormControl, Select, MenuItem } from '@mui/material'
 import * as XLSX from 'xlsx';
+import Grafico from './Grafico';
 
 const InformeCard = ({datosMaestro,formatodivisa,titulo, name}) => {
     const [Linea, setLinea] = useState('')
@@ -17,7 +18,11 @@ const InformeCard = ({datosMaestro,formatodivisa,titulo, name}) => {
     const Coordinador = [...new Set(datosMaestro.map((Val) => Val.Coordinador))]
     const Seudonimo = [...new Set(datosMaestro.map((Val) => Val.Seudonimo))]
     const Estado = ['Cerrado','Cierre administrativo', 'En curso']
-
+    const regresarfecha = (datosMaestro) => {
+      return new Date(datosMaestro.FechaInicioContractual).getFullYear()
+    }
+    const fechaPrestamo = datosMaestro.map(regresarfecha);
+    const año_Contractual = [...new Set(fechaPrestamo)]
     const tableRef = useRef(null);
 
     const downloadxls = (e, data) => {
@@ -34,7 +39,7 @@ const InformeCard = ({datosMaestro,formatodivisa,titulo, name}) => {
 const filtrar = (e) => {
     e.preventDefault()
     if(Seudonimo !== '' || Linea !== '' || FechaInicioC !== '' ||  FechaFinC !== '' || Coord !== '' || Estade !== ''){
-      setFiltro(datosMaestro.filter((d) => d.Seudonimo === Seudonimoo || d.LineaNegocio === Linea  || Coord === d.Coordinador || Estade === d.Estado || FechaInicioC >= d.FechaInicioContractual  ))
+      setFiltro(datosMaestro.filter((d) => d.Seudonimo === Seudonimoo || d.LineaNegocio === Linea  || Coord === d.Coordinador || Estade === d.Estado ))
     }
   }
   const limpiar = (e) => {
@@ -102,13 +107,13 @@ const filtrar = (e) => {
             (sum, value) => typeof value.PCO === "number" ? sum + value.PCO : sum,0 )
     
   // Indicadores
-  let costos = (Total_Pco + Total_Administracion + Total_Imprevistos)
   let Margen_bruto_Porcentual = (UtilidadBruta/Total_Contratado)*100
-  let Roi = ((Total_Contratado - costos)/(costos))
-
+  let utilidad_operacional = UtilidadBruta - Total_Administracion
+  let Margen_operacional = (Total_Contratado/utilidad_operacional)*100
     return (
       <>
         <Typography variant='h4'>{titulo}</Typography>
+        
         <Grid container spacing={2} marginTop={2} marginBottom={4}>
         <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
             <Card>
@@ -231,14 +236,23 @@ const filtrar = (e) => {
             </Card>
   
           </Grid>
+          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
+            <Card>
+              <CardContent>
+                <Typography color={'darkgreen'}>Utilidad Operacional</Typography>
+                <Typography>{formatodivisa.format(utilidad_operacional)}</Typography>
+              </CardContent>
+            </Card>
+  
+          </Grid>
         </Grid>
         <Typography variant='p'>Indicadores</Typography>
         <Grid container spacing={1} marginTop={2} marginBottom={4} >
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <Card>
               <CardContent>
-                <Typography color={'darkgreen'}>ROI:Total contratado - (Pco + Adminisracion + imprevistos)/(Pco + Adminisracion + imprevistos)</Typography>
-                <Typography>{Roi}</Typography>
+                <Typography color={'darkgreen'}>Margen Operacional: Total ingresos/Utilidad operacional</Typography>
+                <Typography>{`${Math.round(Margen_operacional)}%`}</Typography>
               </CardContent>
             </Card>
   

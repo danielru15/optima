@@ -8,7 +8,7 @@ import { DataGrid, renderActionsCell } from '@mui/x-data-grid';
 import TextField from "@mui/material/TextField";
 import { Chip } from "@mui/material";
 import { useRef } from "react";
-import { read, utils, writeFileXLSX } from 'xlsx';
+import * as XLSX from 'xlsx';
 
 const Index = () => {
   const router = useRouter();
