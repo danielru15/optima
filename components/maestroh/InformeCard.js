@@ -113,7 +113,7 @@ const filtrar = (e) => {
     return (
       <>
         <Typography variant='h4'>{titulo}</Typography>
-        
+        <Grafico año={año_Contractual} datosMaestro={datosMaestro}/>
         <Grid container spacing={2} marginTop={2} marginBottom={4}>
         <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
             <Card>

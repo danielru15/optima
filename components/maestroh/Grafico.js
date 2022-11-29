@@ -57,17 +57,17 @@ const Grafico = ({año,datosMaestro}) => {
       labels,
       datasets: [
         {
-          label: 'Total Contratado',
+          label:'Total Contratado',
           data:result.map((f) => f.TotalContratado),
           backgroundColor: 'rgba(15, 91, 36 )',
         },
         {
-          label: 'Total Facturado',
+          label:'Total Facturado',
           data:result.map((f) => f.TotalFacturado),
           backgroundColor: 'rgba(0, 141, 38)',
         },
         {
-            label: 'Total Ingresado al Banco',
+            label:'Total Ingresado al Banco',
             data:result.map((f) => f.TotalIngresado),
             backgroundColor: 'rgba(53, 162, 235, 0.9)',
           },
