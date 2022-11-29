@@ -17,7 +17,7 @@ const InformeCard = ({datosMaestro,formatodivisa,titulo, name}) => {
     const Categoria = [...new Set(datosMaestro.map((Val) => Val.LineaNegocio))];
     const Coordinador = [...new Set(datosMaestro.map((Val) => Val.Coordinador))]
     const Seudonimo = [...new Set(datosMaestro.map((Val) => Val.Seudonimo))]
-    const Estado = ['Cerrado','Cierre administrativo', 'En curso']
+    const Estado = ['CERRADO','CIERRE ADMINISTRATIVO', 'EN CURSO', 'SUSPENDIDO']
     const regresarfecha = (datosMaestro) => {
       return new Date(datosMaestro.FechaInicioContractual).getFullYear()
     }
@@ -38,8 +38,10 @@ const InformeCard = ({datosMaestro,formatodivisa,titulo, name}) => {
    
 const filtrar = (e) => {
     e.preventDefault()
-    if(Seudonimo !== '' || Linea !== '' || FechaInicioC !== '' ||  FechaFinC !== '' || Coord !== '' || Estade !== ''){
+    if(Seudonimo !== '' || Linea !== ''  || Coord !== '' || Estade !== ''){
       setFiltro(datosMaestro.filter((d) => d.Seudonimo === Seudonimoo || d.LineaNegocio === Linea  || Coord === d.Coordinador || Estade === d.Estado ))
+    }else if ( FechaInicioC !== '' ||  FechaFinC !== '') {
+      setFiltro(datosMaestro.filter((d) => d.FechaInicioContractual < FechaInicioC || d.FechaFinalContractual <= FechaFinC   ))
     }
   }
   const limpiar = (e) => {
