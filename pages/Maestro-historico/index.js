@@ -13,13 +13,30 @@ import * as XLSX from 'xlsx';
 const Index = () => {
   const router = useRouter();
   const [Search, setSearch] = useState('')
-  const {datosMaestro,Eliminar,formatodivisa} = useContext(DatosContext)
+  const [pageSize, setPageSize] = useState(5);
+  const {datosMaestro,Eliminar,formatodivisa,Idm, setIdm,ImportarDatosM} = useContext(DatosContext)
   let datos = []
-  const tableRef = useRef(null);
-
-
-
   
+  const readUploadFile = (e) => {
+    e.preventDefault();
+    if (e.target.files) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const data = e.target.result;
+            const workbook = XLSX.read(data, { type: "array" });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            const json = XLSX.utils.sheet_to_json(worksheet);
+            setIdm(json)
+        };
+        reader.readAsArrayBuffer(e.target.files[0]);
+    }
+}
+const handleSubmit = (e) => {
+  e.preventDefault()
+  ImportarDatosM(Idm)
+}
+
   const Searcher = (e) => {
     setSearch(e.target.value)
   }
@@ -35,7 +52,6 @@ const Index = () => {
   const usdPrice = {
     type: 'number',
     valueFormatter: ({ value }) => formatodivisa.format(value),
-    cellClassName: 'font-tabular-nums',
   }
 
   const columns = [
@@ -47,7 +63,7 @@ const Index = () => {
     {field:"Consecutivo", headerName: "Consecutivo"},
     {field:"Oferta", headerName: "Oferta", width:400},
     {field:"LineaNegocio", headerName: "Linea de Negocio"},
-    {field:"Seudonimo", headerName: "Seudonimo", width:300},
+    {field:"Seudonimo", headerName: "Seudonimo", width:400},
     {field:"Nombre", headerName: "Nombre del proyecto", width:800},
     {field: "DescripcionBreve", headerName: "Descripcion Breve",width: 900,},
     {field: "ClienteDirecto", headerName: "Cliente Directo", width: 300 },
@@ -98,7 +114,7 @@ const Index = () => {
     {field: "FacturacionPendientedePago", headerName: "Neto Facturas Pendientes de pago",width: 300,...usdPrice, cellClassName: (params) => params.value >= 1 ? 'pendiente-pago' : '' },
     {field: "AnticiposPendientesDePago",headerName: "valor anticipo Pendientes de pago",width: 300,...usdPrice, cellClassName: (params) => params.value >= 1 ? 'pendiente-pago' : '' },
     {field: "RelacionFacturadoContratado",headerName: "Relación Facturado / Contratado",width: 200,valueFormatter: ({ value }) => `${Math.round(value)}%`, },
-    {field:"Estado", headerName: "Estado", renderCell:(params) => <Chip label={params.value} color={params.value === 'En curso' ?  'success' : params.value === 'Cerrado' ?  'error' : 'warning'} /> },
+    {field:"Estado", headerName: "Estado", width:220, renderCell:(params) => <Chip label={params.value} color={params.value === 'EN CURSO' ?  'success' : params.value === 'CERRADO' ?  'error' : 'CIERRE ADMINISTRATIVO' ? 'warning' : 'info' } /> },
   ]
   
     const downloadxls = (e, data) => {
@@ -114,7 +130,15 @@ const Index = () => {
   return (
     <Layout>
       <p>Maestro Historico Nacionales</p>
+      <br/>
+      <TextField 
+        variant="outlined"  type="file"
+        name="upload"
+        id="upload"
+        onChange={readUploadFile}
+      />
       <ButtonGroup variant="contained" aria-label="small button group" size="small">
+      <Button color='secondary' onClick={handleSubmit}>Importar</Button>
       <Button
         variant="contained"
         onClick={() => router.push("/Maestro-historico/Crear")}
@@ -130,7 +154,6 @@ const Index = () => {
       >
         Descargar
       </Button>
-      <Button color='secondary'>Importar</Button>
     </ButtonGroup>
       <br />
       <TextField fullWidth margin="dense"  value={Search} onChange={Searcher} label="Buscar" />
@@ -141,6 +164,7 @@ const Index = () => {
         columns={columns}
         pageSize={6}
         rowsPerPageOptions={[6,10,25,50,200]}
+        
       />
           
             

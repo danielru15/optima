@@ -11,7 +11,7 @@ import { Chip } from "@mui/material";
 import * as XLSX from 'xlsx';
 
 const Extranjeros = () => {
-  const {datosMaestroE,EliminarE} = useContext(DatosContext)
+  const {datosMaestroE,EliminarE,IdmE, setIdmE,ImportarDatosME} = useContext(DatosContext)
   const [Search, setSearch] = useState('')
   const router = useRouter();
   let datos = []
@@ -44,6 +44,27 @@ const Extranjeros = () => {
     type: 'number',
     valueFormatter: ({ value }) => currencyFormatter.format(value),
     cellClassName: 'font-tabular-nums',
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    ImportarDatosME(IdmE)
+  }
+  
+  const readUploadFile = (e) => {
+    e.preventDefault();
+    if (e.target.files) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const data = e.target.result;
+            const workbook = XLSX.read(data, { type: "array" });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            const json = XLSX.utils.sheet_to_json(worksheet);
+            setIdmE(json)
+        };
+        reader.readAsArrayBuffer(e.target.files[0]);
+    }
   }
 
   const columns = [
@@ -106,13 +127,21 @@ const Extranjeros = () => {
     {field: "FacturacionPendientedePago", headerName: "Neto Facturas Pendientes de pago",width: 300,...usdPrice, cellClassName: (params) => params.value >= 1 ? 'pendiente-pago' : '' },
     {field: "AnticiposPendientesDePago",headerName: "valor anticipo Pendientes de pago",width: 300,...usdPrice, cellClassName: (params) => params.value >= 1 ? 'pendiente-pago' : '' },
     {field: "RelacionFacturadoContratado",headerName: "Relación Facturado / Contratado",width: 200,valueFormatter: ({ value }) => `${Math.round(value)}%`, },
-    {field:"Estado", headerName: "Estado", renderCell:(params) => <Chip label={params.value} color={params.value === 'En curso' ?  'success' : params.value === 'Cerrado' ?  'error' : 'warning'} /> }
+    {field:"Estado", headerName: "Estado", width:220, renderCell:(params) => <Chip label={params.value} color={params.value === 'EN CURSO' ?  'success' : params.value === 'CERRADO' ?  'error' : params.value ==='CIERRE ADMINISTRATIVO' ? 'warning' : 'default' } /> }
   ]
 
   return (
     <Layout>
       <p>Maestro Historico Extranjeros</p>
+      <br/>
+      <TextField 
+        variant="outlined"  type="file"
+        name="upload"
+        id="upload"
+        onChange={readUploadFile}
+      />
       <ButtonGroup variant="contained" aria-label="small button group" size="small">
+      <Button color='secondary' onClick={handleSubmit}>Importar</Button>
       <Button
         variant="contained"
         onClick={() => router.push("/Maestro-historico/crearE")}
@@ -126,7 +155,6 @@ const Extranjeros = () => {
       >
         Descargar
       </Button>
-      <Button color='secondary'>Importar</Button>
       </ButtonGroup>
       <br />
       <TextField fullWidth margin="dense"  value={Search} onChange={Searcher} label="Buscar" />

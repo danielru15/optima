@@ -1,16 +1,16 @@
 import { createContext, useState, useEffect} from "react";
-import Alert from '@mui/material/Alert';
 export { useContext } from "react";
 import { auth, db} from '../firebase'
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 import { collection,onSnapshot, orderBy, query,addDoc, Timestamp,doc, getDocs,updateDoc,deleteDoc,setDoc} from "firebase/firestore";
 import moment from "moment/moment";
-import * as XLSX from 'xlsx';
+import { getJsDateFromExcel } from 'excel-date-to-js'
 export const DatosContext = createContext();
 
 
 export const DatosProvider = ({ children }) => {
-  const [first, setfirst] = useState([])
+  const [Idm, setIdm] = useState([])
+  const [IdmE, setIdmE] = useState([])
   const [User, setUser] = useState('')
   const [Contratado, setContratado] = useState('')
   const [Ejecutado, setEjecutado] = useState('')
@@ -70,7 +70,7 @@ export const DatosProvider = ({ children }) => {
     createUserWithEmailAndPassword(auth,email,password)
     return
   }
-   Login
+  
   const login = (email,password) => {
     return signInWithEmailAndPassword(email,password)
   }
@@ -537,8 +537,8 @@ export const DatosProvider = ({ children }) => {
       alert(err)
     }
   }
-  console.log(first)
-  const CrearDatosF = async (first) => {
+  
+  const ImportarDatosM = async (first) => {
     first.forEach((obj) => {
       try {
       addDoc(collection(db, 'MaestroHistoricO'), {
@@ -556,21 +556,23 @@ export const DatosProvider = ({ children }) => {
         Director:obj.DIRECTOR ===undefined ?obj.DIRECTOR = "":obj.DIRECTOR,
         Coordinador:obj.COORDINADOR===undefined ?obj.COORDINADOR = "":obj.COORDINADOR,
         Contrato:obj.CONTRATO===undefined ?obj.CONTRATO = "":obj.CONTRATO,
-        FechaInicioContractual:obj["FECHA INICIO CONTRACTUAL"] ,
+        FechaInicioContractual:obj["FECHA INICIO CONTRACTUAL"],
         FechaFinalContractual:obj["FECHA TERMINACION CONTRACTUAL"],
+        PlazoContractual:obj["PLAZO CONTRACTUAL"] === undefined ? obj["PLAZO CONTRACTUAL"] = 0: obj["PLAZO CONTRACTUAL"] ,
         FechaInicioReal:obj["FECHA INICIO REAL"],
         FechaFinalReal:obj["FECHA TERMINACIÓN REAL"],
+        PlazoReal:obj["DURACIÓN REAL (DIAS)"],
         ParticipacionOPTIMA:obj["PARTICIPACIÓN OPTIMA "] === undefined || 1 ? obj["PARTICIPACIÓN OPTIMA "] = 100 : obj["PARTICIPACIÓN OPTIMA "],
         ValorContratoSinIVA:obj["VALOR CONTRATO SIN IVA"] === undefined ? obj["VALOR CONTRATO SIN IVA"] = 0 : obj["VALOR CONTRATO SIN IVA"],
-        IVA:obj["IVA "] === undefined ? obj["IVA "] = (obj["IVA "] * 0.19) : obj["IVA "],
-        OTROSSI1:obj["OTROSÍ 1"]=== undefined?obj["OTROSÍ 1"]=0:["OTROSÍ 1"],
+        IVA:obj["IVA "] === undefined ? obj["IVA "] = 0 : obj["IVA "],
+        OTROSSI1:obj["OTROSÍ 1"]=== undefined?obj["OTROSÍ 1"]=0:obj["OTROSÍ 1"],
         OTROSSI2:obj["OTROSÍ 2"]=== undefined?obj["OTROSÍ 2"]=0:obj["OTROSÍ 2"],
         OTROSSI3:obj["OTROSÍ 3"]=== undefined?obj["OTROSÍ 3"]=0:obj["OTROSÍ 3"],
         OTROSSI4:obj["OTROSÍ 4"]=== undefined?obj["OTROSÍ 4"]=0:obj["OTROSÍ 4"],
         OTROSSI5:obj["OTROSÍ 5"]=== undefined?obj["OTROSÍ 5"]=0:obj["OTROSÍ 5"],
         OTROSSI6:obj["OTROSÍ 6"]=== undefined?obj["OTROSÍ 6"]=0:obj["OTROSÍ 6"],
         OTROSSI7:obj["OTROSÍ 7"]=== undefined?obj["OTROSÍ 7"]=0:obj["OTROSÍ 7"],
-        OTROSSI9:obj["OTROSÍ 8"]=== undefined?obj["OTROSÍ 8"]=0:obj["OTROSÍ 8"],
+        OTROSSI8:obj["OTROSÍ 8"]=== undefined?obj["OTROSÍ 8"]=0:obj["OTROSÍ 8"],
         OTROSSI9:obj["OTROSÍ 9"]=== undefined?obj["OTROSÍ 9"]=0:obj["OTROSÍ 9"],
         OTROSSI10:obj["OTROSÍ 10"]=== undefined?obj["OTROSÍ 10"]=0:obj["OTROSÍ 10"],
         OTROSSI11:obj["OTROSÍ 11"]=== undefined?obj["OTROSÍ 11"]=0:obj["OTROSÍ 11"],
@@ -585,7 +587,7 @@ export const DatosProvider = ({ children }) => {
         AnticipoContractual:obj["VALOR ANTICIPO CONTRACTUAL"] === undefined ? obj["VALOR ANTICIPO CONTRACTUAL"] = 0 : obj["VALOR ANTICIPO CONTRACTUAL"],
         AnticiposPagadosxElCliente:obj["VALOR ANTICIPOS PAGADOS POR EL CLIENTE"] === undefined ? obj["VALOR ANTICIPOS PAGADOS POR EL CLIENTE"] = 0: obj["VALOR ANTICIPOS PAGADOS POR EL CLIENTE"],
         ValorTotalFacturadoSinIVA:obj["VALOR TOTAL FACTURADO SIN IVA"] === undefined ? obj["VALOR TOTAL FACTURADO SIN IVA"] = 0 : obj["VALOR TOTAL FACTURADO SIN IVA"],
-        IVAFacturado:obj["IVA / IMPUESTOS FACTURACION"] === undefined ? obj["IVA / IMPUESTOS FACTURACION"] = (obj["IVA / IMPUESTOS FACTURACION"]*0.19) : obj["IVA / IMPUESTOS FACTURACION"] ,
+        IVAFacturado:obj["IVA / IMPUESTOS FACTURACION"] === undefined ? obj["IVA / IMPUESTOS FACTURACION"] = 0 : obj["IVA / IMPUESTOS FACTURACION"] ,
         RetegantiaPorcent:obj["% RETEGANTIA"] === undefined ? obj["% RETEGANTIA"] = 0 : obj["% RETEGANTIA"],
         ValorReteGantia:obj["VALOR RETENCIÓN DE GARANTÍA"] === undefined ? obj["VALOR RETENCIÓN DE GARANTÍA"] = 0 :obj["VALOR RETENCIÓN DE GARANTÍA"],
         ValorPendientePorFacturarSinIVA:obj["VALOR PENDIENTE POR EJECUTAR FACTURAR SIN IVA"]=== undefined ? obj["VALOR PENDIENTE POR EJECUTAR FACTURAR SIN IVA"] = 0 : obj["VALOR PENDIENTE POR EJECUTAR FACTURAR SIN IVA"] ,
@@ -595,19 +597,85 @@ export const DatosProvider = ({ children }) => {
         RetencionesYDescuentos:obj["VALOR RETENCIONES Y DESCUENTOS APLICADOS POR EL CLIENTE (SIN AMORTIZACIÓN DE ANTICIPO)"]=== undefined ? obj["VALOR RETENCIONES Y DESCUENTOS APLICADOS POR EL CLIENTE (SIN AMORTIZACIÓN DE ANTICIPO)"] = 0 : obj["VALOR RETENCIONES Y DESCUENTOS APLICADOS POR EL CLIENTE (SIN AMORTIZACIÓN DE ANTICIPO)"],
         FacturacionPendientedePago:obj["NETO FACTURACIÓN PENDIENTE DE PAGO"]=== undefined ? obj["NETO FACTURACIÓN PENDIENTE DE PAGO"] = 0 : obj["NETO FACTURACIÓN PENDIENTE DE PAGO"] ,
         AnticiposPendientesDePago:obj["VALOR ANTICIPOS PENDIENTES DE PAGO"] === undefined?obj["VALOR ANTICIPOS PENDIENTES DE PAGO"] = 0 : obj["VALOR ANTICIPOS PENDIENTES DE PAGO"],
-        RelacionFacturadoContratado:obj["RELACIÓN FACTURADO / CONTRATADO"] === undefined ?obj["RELACIÓN FACTURADO / CONTRATADO"]='':obj["RELACIÓN FACTURADO / CONTRATADO"] ,
+        RelacionFacturadoContratado:obj["RELACIÓN FACTURADO / CONTRATADO"] === undefined ?obj["RELACIÓN FACTURADO / CONTRATADO"]='':obj["RELACIÓN FACTURADO / CONTRATADO"] *100,
         Estado:obj["ESTADO CONTRATO"]=== undefined ? obj["ESTADO CONTRATO"] = "" : obj["ESTADO CONTRATO"]
       })
     }catch (err) {
       console.log(err)
     }
-  });
-   
+  })
+  }
+  const ImportarDatosME = async (first) => {
+    first.forEach((obj) => {
+      try {
+      addDoc(collection(db, 'MaestroHistoricOE'), {
+        Contratado:obj.CONTRATADO === undefined ? obj.CONTRATADO = '' :obj.CONTRATADO,
+        Ejecutado:obj["EJECUTADO EN"] === undefined ? obj["EJECUTADO EN"] = '' : obj["EJECUTADO EN"],
+        Consecutivo:obj["CONSECUTIVO (PY)"]=== undefined ? obj["CONSECUTIVO (PY)"]= "":obj["CONSECUTIVO (PY)"],
+        Oferta:obj.OFERTA===undefined ? obj.OFERTA = "": obj.OFERTA,
+        LineaNegocio:obj["LINEA DE NEGOCIO"]===undefined ? obj["LINEA DE NEGOCIO"] = "":obj["LINEA DE NEGOCIO"],
+        Seudonimo:obj["SEUDONIMO "] ===undefined ?obj["SEUDONIMO "] = "":obj["SEUDONIMO "],
+        Nombre:obj["NOMBRE DEL PROYECTO"]===undefined ? obj["NOMBRE DEL PROYECTO"] = "":obj["NOMBRE DEL PROYECTO"],
+        DescripcionBreve:obj["DESCRIPCION BREVE"] ===undefined ?obj["DESCRIPCION BREVE"] = "":obj["DESCRIPCION BREVE"],
+        ClienteDirecto:obj["CLIENTE DIRECTO"] ===undefined ? obj["CLIENTE DIRECTO"]= "":obj["CLIENTE DIRECTO"],
+        ContactoCliente:obj["CONTACTO CLIENTE"] ===undefined ?obj["CONTACTO CLIENTE"] = "": obj["CONTACTO CLIENTE"],
+        ClienteFinal:obj["CLIENTE FINAL"] ===undefined ? obj["CLIENTE FINAL"] = "":obj["CLIENTE FINAL"],
+        Director:obj.DIRECTOR ===undefined ?obj.DIRECTOR = "":obj.DIRECTOR,
+        Coordinador:obj.COORDINADOR===undefined ?obj.COORDINADOR = "":obj.COORDINADOR,
+        Contrato:obj.CONTRATO===undefined ?obj.CONTRATO = "":obj.CONTRATO,
+        FechaInicioContractual:obj["FECHA INICIO CONTRACTUAL"],
+        FechaFinalContractual:obj["FECHA TERMINACION CONTRACTUAL"],
+        PlazoContractual:obj["PLAZO CONTRACTUAL"] === undefined ? obj["PLAZO CONTRACTUAL"] = 0: obj["PLAZO CONTRACTUAL"] ,
+        FechaInicioReal:obj["FECHA INICIO REAL"],
+        FechaFinalReal:obj["FECHA TERMINACIÓN REAL"],
+        PlazoReal:obj["DURACIÓN REAL (DIAS)"],
+        ParticipacionOPTIMA:obj["PARTICIPACIÓN OPTIMA "] === undefined || 1 ? obj["PARTICIPACIÓN OPTIMA "] = 100 : obj["PARTICIPACIÓN OPTIMA "],
+        ValorContratoSinIVA:obj["VALOR CONTRATO SIN IVA"] === undefined ? obj["VALOR CONTRATO SIN IVA"] = 0 : obj["VALOR CONTRATO SIN IVA"],
+        IVA:obj["IVA "] === undefined ? obj["IVA "] = 0 : obj["IVA "],
+        OTROSSI1:obj["OTROSÍ 1"]=== undefined?obj["OTROSÍ 1"]=0:obj["OTROSÍ 1"],
+        OTROSSI2:obj["OTROSÍ 2"]=== undefined?obj["OTROSÍ 2"]=0:obj["OTROSÍ 2"],
+        OTROSSI3:obj["OTROSÍ 3"]=== undefined?obj["OTROSÍ 3"]=0:obj["OTROSÍ 3"],
+        OTROSSI4:obj["OTROSÍ 4"]=== undefined?obj["OTROSÍ 4"]=0:obj["OTROSÍ 4"],
+        OTROSSI5:obj["OTROSÍ 5"]=== undefined?obj["OTROSÍ 5"]=0:obj["OTROSÍ 5"],
+        OTROSSI6:obj["OTROSÍ 6"]=== undefined?obj["OTROSÍ 6"]=0:obj["OTROSÍ 6"],
+        OTROSSI7:obj["OTROSÍ 7"]=== undefined?obj["OTROSÍ 7"]=0:obj["OTROSÍ 7"],
+        OTROSSI8:obj["OTROSÍ 8"]=== undefined?obj["OTROSÍ 8"]=0:obj["OTROSÍ 8"],
+        OTROSSI9:obj["OTROSÍ 9"]=== undefined?obj["OTROSÍ 9"]=0:obj["OTROSÍ 9"],
+        OTROSSI10:obj["OTROSÍ 10"]=== undefined?obj["OTROSÍ 10"]=0:obj["OTROSÍ 10"],
+        OTROSSI11:obj["OTROSÍ 11"]=== undefined?obj["OTROSÍ 11"]=0:obj["OTROSÍ 11"],
+        OTROSSI12:obj["OTROSÍ 12"]=== undefined?obj["OTROSÍ 12"]=0:obj["OTROSÍ 12"],
+        TotalOtrossi:obj["TOTAL OTROSÍES"]=== undefined ?obj["TOTAL OTROSÍES"] = 0 :obj["TOTAL OTROSÍES"],
+        ValorTotalContratado:obj["VALOR TOTAL CONTRATADO (SIN IVA)"] === undefined ? obj["VALOR TOTAL CONTRATADO (SIN IVA)"] = (ValorContratoSinIVA + TotalOtrossi ): obj["VALOR TOTAL CONTRATADO (SIN IVA)"],
+        PCO:obj.PCO === undefined?obj.PCO = 0 :obj.PCO,
+        Administracion:obj.ADMINISTRACIÓN === undefined?obj.ADMINISTRACIÓN = 0 :obj.ADMINISTRACIÓN,
+        Imprevistos:obj.IMPREVISTOS === undefined?obj.IMPREVISTOS = 0 :obj.IMPREVISTOS,
+        UtilidadBruta:obj["UTILIDAD BRUTA"]=== undefined? obj["UTILIDAD BRUTA"] = 0:obj["UTILIDAD BRUTA"],
+        PorcentAnticipoContractural:obj["% ANTICIPO CONTRACTUAL"] === undefined ? obj["% ANTICIPO CONTRACTUAL"] =0 : obj["% ANTICIPO CONTRACTUAL"],
+        AnticipoContractual:obj["VALOR ANTICIPO CONTRACTUAL"] === undefined ? obj["VALOR ANTICIPO CONTRACTUAL"] = 0 : obj["VALOR ANTICIPO CONTRACTUAL"],
+        AnticiposPagadosxElCliente:obj["VALOR ANTICIPOS PAGADOS POR EL CLIENTE"] === undefined ? obj["VALOR ANTICIPOS PAGADOS POR EL CLIENTE"] = 0: obj["VALOR ANTICIPOS PAGADOS POR EL CLIENTE"],
+        ValorTotalFacturadoSinIVA:obj["VALOR TOTAL FACTURADO SIN IVA"] === undefined ? obj["VALOR TOTAL FACTURADO SIN IVA"] = 0 : obj["VALOR TOTAL FACTURADO SIN IVA"],
+        IVAFacturado:obj["IVA / IMPUESTOS FACTURACION"] === undefined ? obj["IVA / IMPUESTOS FACTURACION"] = 0 : obj["IVA / IMPUESTOS FACTURACION"] ,
+        RetegantiaPorcent:obj["% RETEGANTIA"] === undefined ? obj["% RETEGANTIA"] = 0 : obj["% RETEGANTIA"],
+        ValorReteGantia:obj["VALOR RETENCIÓN DE GARANTÍA"] === undefined ? obj["VALOR RETENCIÓN DE GARANTÍA"] = 0 :obj["VALOR RETENCIÓN DE GARANTÍA"],
+        ValorPendientePorFacturarSinIVA:obj["VALOR PENDIENTE POR EJECUTAR FACTURAR SIN IVA"]=== undefined ? obj["VALOR PENDIENTE POR EJECUTAR FACTURAR SIN IVA"] = 0 : obj["VALOR PENDIENTE POR EJECUTAR FACTURAR SIN IVA"] ,
+        FacturasPagadsPorElCliente:obj["NETO FACTURAS PAGADAS POR EL CLIENTE"]=== undefined ? obj["NETO FACTURAS PAGADAS POR EL CLIENTE"] = 0 : obj["NETO FACTURAS PAGADAS POR EL CLIENTE"],
+        AnticipoAmortizadoPorElCliente:obj["VALOR ANTICIPO AMORTIZADO POR EL CLIENTE"]=== undefined ? obj["VALOR ANTICIPO AMORTIZADO POR EL CLIENTE"] = 0 : obj["VALOR ANTICIPO AMORTIZADO POR EL CLIENTE"] ,
+        SaldoAnticipoPorAmortizar:obj["SALDO ANTICIPO POR AMORTIZAR"]=== undefined ? obj["SALDO ANTICIPO POR AMORTIZAR"] = 0 : obj["SALDO ANTICIPO POR AMORTIZAR"] ,
+        RetencionesYDescuentos:obj["VALOR RETENCIONES Y DESCUENTOS APLICADOS POR EL CLIENTE (SIN AMORTIZACIÓN DE ANTICIPO)"]=== undefined ? obj["VALOR RETENCIONES Y DESCUENTOS APLICADOS POR EL CLIENTE (SIN AMORTIZACIÓN DE ANTICIPO)"] = 0 : obj["VALOR RETENCIONES Y DESCUENTOS APLICADOS POR EL CLIENTE (SIN AMORTIZACIÓN DE ANTICIPO)"],
+        FacturacionPendientedePago:obj["NETO FACTURACIÓN PENDIENTE DE PAGO"]=== undefined ? obj["NETO FACTURACIÓN PENDIENTE DE PAGO"] = 0 : obj["NETO FACTURACIÓN PENDIENTE DE PAGO"] ,
+        AnticiposPendientesDePago:obj["VALOR ANTICIPOS PENDIENTES DE PAGO"] === undefined?obj["VALOR ANTICIPOS PENDIENTES DE PAGO"] = 0 : obj["VALOR ANTICIPOS PENDIENTES DE PAGO"],
+        RelacionFacturadoContratado:obj["RELACIÓN FACTURADO / CONTRATADO"] === undefined ?obj["RELACIÓN FACTURADO / CONTRATADO"]='':obj["RELACIÓN FACTURADO / CONTRATADO"] *100,
+        Estado:obj["ESTADO CONTRATO"]=== undefined ? obj["ESTADO CONTRATO"] = "" : obj["ESTADO CONTRATO"]
+      })
+    }catch (err) {
+      console.log(err)
+    }
+  })
   }
   // Mostrar Datos
   useEffect(() => {
     const E = query(collection(db, 'MaestroHistoricOE') )
-    const q = query(collection(db, 'MaestroHistoricO'), orderBy("Seudonimo", "asc" ))
+    const q = query(collection(db, 'MaestroHistoricO'),orderBy("Seudonimo", "asc" ))
     onSnapshot(E, (querySnapshot) => {
       setDatosMaestroE(querySnapshot.docs.map(doc => ({
         id: doc.id,
@@ -741,8 +809,10 @@ export const DatosProvider = ({ children }) => {
 
   return (
     <DatosContext.Provider value={{
-      CrearDatosF,
-      first, setfirst,
+      ImportarDatosME,
+      ImportarDatosM,
+      Idm, setIdm,
+      IdmE, setIdmE,
       formatodivisa,
       Eliminar,
       Actualizar,
