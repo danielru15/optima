@@ -59,7 +59,7 @@ export const DatosProvider = ({ children }) => {
   const [Estadoo, setEstadoo] = useState('')
   const [datosMaestro, setDatosMaestro] = useState([])
   const [datosMaestroE, setDatosMaestroE] = useState([]);
-
+  
   // Mostrar en pesos 
   const formatodivisa = new Intl.NumberFormat('es-CO',{
     style:'currency',

@@ -162,12 +162,8 @@ const handleSubmit = (e) => {
       <DataGrid 
         rows={datos}
         columns={columns}
-        pageSize={6}
-        rowsPerPageOptions={[6,10,25,50,200]}
-        
-      />
-          
-            
+        pageSize={7}      
+      />           
       </div>
     </Layout>
   );

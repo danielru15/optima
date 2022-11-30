@@ -4,6 +4,7 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import { Button, Card, CardContent, Grid,  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, Box, InputLabel, FormLabel, FormControl, Select, MenuItem } from '@mui/material'
 import * as XLSX from 'xlsx';
 import Grafico from './Grafico';
+import PieChart from './PieChart';
 
 const InformeCard = ({datosMaestro,formatodivisa,titulo, name}) => {
     const [Linea, setLinea] = useState('')
@@ -18,6 +19,7 @@ const InformeCard = ({datosMaestro,formatodivisa,titulo, name}) => {
     const Coordinador = [...new Set(datosMaestro.map((Val) => Val.Coordinador))]
     const Seudonimo = [...new Set(datosMaestro.map((Val) => Val.Seudonimo))]
     const Estado = ['CERRADO','CIERRE ADMINISTRATIVO', 'EN CURSO', 'SUSPENDIDO']
+    let TotalDatosMaestro = filtro?filtro.length:datosMaestro.length
     const regresarfecha = (datosMaestro) => {
       return new Date(datosMaestro.FechaInicioContractual).getFullYear()
     }
@@ -40,8 +42,6 @@ const filtrar = (e) => {
     e.preventDefault()
     if(Seudonimo !== '' || Linea !== ''  || Coord !== '' || Estade !== ''){
       setFiltro(datosMaestro.filter((d) => d.Seudonimo === Seudonimoo || d.LineaNegocio === Linea  || Coord === d.Coordinador || Estade === d.Estado ))
-    }else if ( FechaInicioC !== '' ||  FechaFinC !== '') {
-      setFiltro(datosMaestro.filter((d) => d.FechaInicioContractual < FechaInicioC || d.FechaFinalContractual <= FechaFinC   ))
     }
   }
   const limpiar = (e) => {
@@ -112,10 +112,19 @@ const filtrar = (e) => {
   let Margen_bruto_Porcentual = (UtilidadBruta/Total_Contratado)*100
   let utilidad_operacional = UtilidadBruta - Total_Administracion
   let Margen_operacional = (Total_Contratado/utilidad_operacional)*100
+
+  // 
     return (
       <>
         <Typography variant='h4'>{titulo}</Typography>
-        <Grafico año={año_Contractual} datosMaestro={datosMaestro}/>
+        <Grid container spacing={1} marginTop={2} marginBottom={4} >
+          <Grid item xs={12} sm={6} md={7.5} lg={7.5} xl={7.5}>
+            <Grafico año={año_Contractual} datosMaestro={filtro?filtro:datosMaestro}/>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3.5} lg={3.5} xl={3.5}>
+            <PieChart datosMaestro={filtro?filtro:datosMaestro} TotalDatosMaestro={TotalDatosMaestro}/>
+          </Grid>
+        </Grid>
         <Grid container spacing={2} marginTop={2} marginBottom={4}>
         <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
             <Card>
@@ -314,13 +323,20 @@ const filtrar = (e) => {
            }
           </Select>
           </FormControl>
-          <TextField 
-          label="Fecha inicio"
-          type="month"
-          onChange={e => setFechaInicioC(e.target.value)}
-        
-          
-          />
+          <FormControl>
+          <InputLabel>Fecha Inicio</InputLabel>
+          <Select
+            label="Fecha Inicio"
+            value={FechaInicioC}
+            onChange={e => setFechaInicioC(e.target.value)}
+          >
+           {
+            año_Contractual.map((c,i) => (
+              <MenuItem  key={i} value={c}>{c}</MenuItem>
+            ))
+           }
+          </Select>
+          </FormControl>
           
           <TextField 
           type="month"
@@ -348,7 +364,8 @@ const filtrar = (e) => {
             <Button onClick={(e) => {downloadxls(e, filtro?filtro:datosMaestro)}} variant="contained" color='warning' >Descargar</Button>
           </ButtonGroup>
         </form>
-        <TableContainer marginTop={3}>
+        <TableContainer>
+        <Typography marginTop={3}>Total de registros: {TotalDatosMaestro}</Typography>
           <Table sx={{width:"max-content"}} aria-label="simple table" ref={tableRef}>
             <TableHead>
               <TableRow>

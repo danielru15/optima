@@ -75,7 +75,7 @@ const Grafico = ({año,datosMaestro}) => {
     }
 
   return (
-    <div style={{width:800}}>
+    <div>
     <Bar options={options} data={data} />
     </div>
   )
