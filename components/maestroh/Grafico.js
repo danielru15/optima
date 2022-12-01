@@ -44,10 +44,7 @@ const Grafico = ({año,datosMaestro}) => {
           legend: {
             position: 'top',
           },
-          title: {
-            display: true,
-            text: '',
-          },
+
         },
       };
     

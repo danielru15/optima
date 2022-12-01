@@ -24,7 +24,7 @@ const PieChart = ({datosMaestro, TotalDatosMaestro}) => {
       };
 
     const data = {
-        labels: ['EN CURSO','CERRADO', 'CIERRE ADMINISTRATIVO', 'SUSPENDIDO'],
+        labels: [`EN CURSO ${TotalEncurso}%`,`CERRADO ${TotalCerrados}%`, `CIERRE ADMINISTRATIVO ${TotalCerradoAdministrativo}%`, `SUSPENDIDO ${TotalSuspendio}%`],
         datasets: [
           {
             label: '%',

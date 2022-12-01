@@ -2,6 +2,9 @@ import React, {useState} from 'react'
 import { useRef } from 'react'
 import ButtonGroup from '@mui/material/ButtonGroup';
 import { Button, Card, CardContent, Grid,  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, Box, InputLabel, FormLabel, FormControl, Select, MenuItem } from '@mui/material'
+import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import FilterAltOffOutlinedIcon from '@mui/icons-material/FilterAltOffOutlined';
 import * as XLSX from 'xlsx';
 import Grafico from './Grafico';
 import PieChart from './PieChart';
@@ -12,6 +15,8 @@ const InformeCard = ({datosMaestro,formatodivisa,titulo, name}) => {
     const [Seudonimoo, setSeudonimoo] = useState('')
     const [FechaInicioC, setFechaInicioC] = useState('')
     const [FechaFinC, setFechaFinC] = useState('')
+    const [FechaInicioR, setFechaInicioR] = useState('')
+    const [FechaFinR, setFechaFinR] = useState('')
     const [Estade, setEstade] = useState('')
     const [filtro, setFiltro] = useState()
     const first = useRef()
@@ -23,10 +28,23 @@ const InformeCard = ({datosMaestro,formatodivisa,titulo, name}) => {
     const regresarfecha = (datosMaestro) => {
       return new Date(datosMaestro.FechaInicioContractual).getFullYear()
     }
-    const fechaPrestamo = datosMaestro.map(regresarfecha);
-    const año_Contractual = [...new Set(fechaPrestamo)]
+    const regresarfechaFinalC = (datosMaestro) => {
+      return new Date(datosMaestro.FechaFinalContractual).getFullYear()
+    }
+    const regresarfechaFinalR = (datosMaestro) => {
+      return new Date(datosMaestro.FechaFinalReal).getFullYear()
+    }
+    const regresarfechaR = (datosMaestro) => {
+      return new Date(datosMaestro.FechaInicioReal).getFullYear()
+    }
+
+    const año_Contractual = [...new Set(datosMaestro.map(regresarfecha))]
+    const año_Real = [...new Set(datosMaestro.map(regresarfechaR))]
+    const año_final = [...new Set(datosMaestro.map(regresarfechaFinalC))]
+    const año_finalR = [...new Set(datosMaestro.map(regresarfechaFinalR))]
     const tableRef = useRef(null);
 
+   
     const downloadxls = (e, data) => {
       e.preventDefault();
       const ws = XLSX.utils.json_to_sheet(data);
@@ -35,13 +53,13 @@ const InformeCard = ({datosMaestro,formatodivisa,titulo, name}) => {
       /* generate XLSX file and send to client */
       XLSX.writeFile(wb, "Informe.xls");
     };
-   //Function filtro
 
-   
+   //Function filtro
 const filtrar = (e) => {
     e.preventDefault()
-    if(Seudonimo !== '' || Linea !== ''  || Coord !== '' || Estade !== ''){
-      setFiltro(datosMaestro.filter((d) => d.Seudonimo === Seudonimoo || d.LineaNegocio === Linea  || Coord === d.Coordinador || Estade === d.Estado ))
+    if(Seudonimo !== '' || Linea !== ''  || Coord !== '' || Estade !== ''  ){
+      setFiltro(datosMaestro.filter((d) => d.Seudonimo === Seudonimoo || d.LineaNegocio === Linea  || Coord === d.Coordinador || Estade === d.Estado  || FechaInicioC.toString().includes(d.FechaInicioContractual.slice(0,4)) || 
+      FechaFinC.toString().includes(d.FechaFinalContractual.slice(0,4)) || FechaInicioR.toString().includes(d.FechaInicioReal.slice(0,4)) || FechaFinR.toString().includes(d.FechaFinalReal.slice(0,4))))
     }
   }
   const limpiar = (e) => {
@@ -49,6 +67,8 @@ const filtrar = (e) => {
     setSeudonimoo('')
     setFechaFinC('')
     setFechaInicioC('')
+    setFechaInicioR('')
+    setFechaFinR('')
     setLinea('')
     setCoord('')
     setFiltro('')
@@ -111,7 +131,7 @@ const filtrar = (e) => {
   // Indicadores
   let Margen_bruto_Porcentual = (UtilidadBruta/Total_Contratado)*100
   let utilidad_operacional = UtilidadBruta - Total_Administracion
-  let Margen_operacional = (Total_Contratado/utilidad_operacional)*100
+  let Margen_operacional = (utilidad_operacional/ Total_Contratado)*100
 
   // 
     return (
@@ -119,7 +139,7 @@ const filtrar = (e) => {
         <Typography variant='h4'>{titulo}</Typography>
         <Grid container spacing={1} marginTop={2} marginBottom={4} >
           <Grid item xs={12} sm={6} md={7.5} lg={7.5} xl={7.5}>
-            <Grafico año={año_Contractual} datosMaestro={filtro?filtro:datosMaestro}/>
+            <Grafico año={año_Real} datosMaestro={filtro?filtro:datosMaestro}/>
           </Grid>
           <Grid item xs={12} sm={6} md={3.5} lg={3.5} xl={3.5}>
             <PieChart datosMaestro={filtro?filtro:datosMaestro} TotalDatosMaestro={TotalDatosMaestro}/>
@@ -262,7 +282,7 @@ const filtrar = (e) => {
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <Card>
               <CardContent>
-                <Typography color={'darkgreen'}>Margen Operacional: Total ingresos/Utilidad operacional</Typography>
+                <Typography color={'darkgreen'}>Margen Operacional: Utilidad operacional / Total Contratado</Typography>
                 <Typography>{`${Math.round(Margen_operacional)}%`}</Typography>
               </CardContent>
             </Card>
@@ -282,7 +302,7 @@ const filtrar = (e) => {
         <form onSubmit={filtrar} ref={first} >
           <FormLabel>Filtrar</FormLabel>
           <FormControl>
-          <InputLabel>Seudonimo</InputLabel>
+          <FormLabel>Seudonimo</FormLabel>
           <Select
             label="Seudonimo"
             value={Seudonimoo}
@@ -296,7 +316,7 @@ const filtrar = (e) => {
           </Select>
           </FormControl>
           <FormControl>
-          <InputLabel>Linea Negocio</InputLabel>
+          <FormLabel>Linea Negocio</FormLabel>
           <Select
             label="Linea Negocio"
             value={Linea}
@@ -310,7 +330,7 @@ const filtrar = (e) => {
           </Select>
           </FormControl>
           <FormControl>
-          <InputLabel>Coordinador</InputLabel>
+          <FormLabel>Coordinador</FormLabel>
           <Select
             label="coordinador"
             value={Coord}
@@ -324,7 +344,7 @@ const filtrar = (e) => {
           </Select>
           </FormControl>
           <FormControl>
-          <InputLabel>Fecha Inicio</InputLabel>
+          <FormLabel>Fecha Inicio Contractual</FormLabel>
           <Select
             label="Fecha Inicio"
             value={FechaInicioC}
@@ -337,15 +357,49 @@ const filtrar = (e) => {
            }
           </Select>
           </FormControl>
-          
-          <TextField 
-          type="month"
-          label="Fecha fin"
-          onChange={e => setFechaFinC(e.target.value)}
-      
-          />
           <FormControl>
-          <InputLabel>Estado</InputLabel>
+          <FormLabel>Fecha final contractual</FormLabel>
+          <Select
+            label="Fecha final contractual"
+            value={FechaFinC}
+            onChange={e => setFechaFinC(e.target.value)}
+          >
+           {
+            año_final.map((c,i) => (
+              <MenuItem  key={i} value={c}>{c}</MenuItem>
+            ))
+           }
+          </Select>
+          </FormControl>
+          <FormControl>
+          <FormLabel>Fecha Inicio Real</FormLabel>
+          <Select
+            value={FechaInicioR}
+            onChange={e => setFechaInicioR(e.target.value)}
+          >
+           {
+            año_Real.map((c,i) => (
+              <MenuItem  key={i} value={c}>{c}</MenuItem>
+            ))
+           }
+          </Select>
+          </FormControl>
+          <FormControl>
+          <FormLabel>Fecha final Real</FormLabel>
+          <Select
+            value={FechaFinR}
+            onChange={e => setFechaFinR(e.target.value)}
+          >
+           {
+            año_finalR.map((c,i) => (
+              <MenuItem  key={i} value={c}>{c}</MenuItem>
+            ))
+           }
+          </Select>
+          </FormControl>
+        
+          <FormControl>
+          <FormLabel>Estado</FormLabel>
           <Select
             label="Estado"
             value={Estade}
@@ -359,9 +413,9 @@ const filtrar = (e) => {
           </Select>
           </FormControl>
           <ButtonGroup>
-            <Button variant="contained" color='success' type="submit" >Filtrar</Button>
-            <Button variant="contained" color='error' onClick={limpiar} >Limpiar</Button>
-            <Button onClick={(e) => {downloadxls(e, filtro?filtro:datosMaestro)}} variant="contained" color='warning' >Descargar</Button>
+            <Button variant="contained"  type="submit" endIcon={<FilterAltOutlinedIcon/> } >Filtrar</Button>
+            <Button variant="contained" color='error' onClick={limpiar} endIcon={<FilterAltOffOutlinedIcon/>} >Limpiar</Button>
+            <Button onClick={(e) => {downloadxls(e, filtro?filtro:datosMaestro)}} variant="contained" color='success' endIcon={<FileDownloadOutlinedIcon/>}>Descargar</Button>
           </ButtonGroup>
         </form>
         <TableContainer>

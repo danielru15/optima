@@ -4,6 +4,12 @@ import { DatosContext } from "../../Context/datosContext"
 import { useRouter } from "next/router";
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from "@mui/material/Button";
+import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, renderActionsCell } from '@mui/x-data-grid';
 import TextField from "@mui/material/TextField";
 import { Chip } from "@mui/material";
@@ -56,7 +62,12 @@ const handleSubmit = (e) => {
 
   const columns = [
     {headerName: "Acciones", width:200, type:"actions", renderCell:(params)=> <ButtonGroup>
-      <Button variant="contained" size="small" color="success" onClick={() => router.push(`/Maestro-historico/${params.row.id}`)}>Editar</Button><Button onClick={() => Eliminar(params.id)} size="small" variant="contained" color="error">Eliminar</Button>
+       <IconButton aria-label="eliminar">
+        <DeleteIcon onClick={() => Eliminar(params.id)} color="error"/>
+      </IconButton>
+      <IconButton aria-label="edit">
+        <EditIcon  onClick={() => router.push(`/Maestro-historico/${params.row.id}`)}/>
+      </IconButton>
     </ButtonGroup>},
     {field:"Contratado", headerName: "Contratado", width:100},
     {field:"Ejecutado", headerName: "Ejecutado En"},
@@ -138,10 +149,11 @@ const handleSubmit = (e) => {
         onChange={readUploadFile}
       />
       <ButtonGroup variant="contained" aria-label="small button group" size="small">
-      <Button color='secondary' onClick={handleSubmit}>Importar</Button>
+      <Button color='secondary' onClick={handleSubmit} endIcon={<UploadFileOutlinedIcon/>}>Importar</Button>
       <Button
         variant="contained"
         onClick={() => router.push("/Maestro-historico/Crear")}
+        endIcon={<AddCircleOutlineOutlinedIcon/>}
       >
         Crear
       </Button>
@@ -151,6 +163,7 @@ const handleSubmit = (e) => {
         onClick={(e) => {
           downloadxls(e, datos);
         }}
+        endIcon={<FileDownloadOutlinedIcon/>}
       >
         Descargar
       </Button>
