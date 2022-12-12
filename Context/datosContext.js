@@ -11,6 +11,8 @@ export const DatosContext = createContext();
 export const DatosProvider = ({ children }) => {
   const [Idm, setIdm] = useState([])
   const [IdmE, setIdmE] = useState([])
+  const [IdF, setIdF] = useState([])
+  const [Facturacion, setFacturacion] = useState([])
   const [User, setUser] = useState('')
   const [Contratado, setContratado] = useState('')
   const [Ejecutado, setEjecutado] = useState('')
@@ -672,10 +674,44 @@ export const DatosProvider = ({ children }) => {
     }
   })
   }
+  
+  const Importarfactura = async (first) => {
+    first.forEach((obj) => {
+      try {
+      addDoc(collection(db, 'FACTURACION'), {
+        Num:obj["Num"] === undefined ? '' : obj["Num"],
+        NumeroIdentificacion: obj["Número de identificación"] === undefined ? 0 : obj["Número de identificación"],
+        TipoDocumento:obj["Tipo de Documento"]  === undefined ? '' :obj["Tipo de Documento"],
+        Centrodecostos:obj["Centro de costos"] === undefined ?  0:obj["Centro de costos"],
+        Fecha:obj.Fecha === undefined ? 0 :obj.Fecha,
+        FechaVencimiento:obj["Fecha de Vencimiento"] === undefined ?  0:obj["Fecha de Vencimiento"],
+        Concepto:obj.Concepto === undefined ? 0 :obj.Concepto,
+        ValorAntesdeIVA:obj["Valor Antes de IVA"] === undefined ?  0:obj["Valor Antes de IVA"],
+        IVA:obj[" IVA "] === undefined ? 0 :obj[" IVA "],
+        TotalconIVA:obj["Total con IVA"] === undefined ? 0:obj["Total con IVA"],
+        RetencionFuente:obj[" Retención en la fuente "] === undefined ? 0 :obj[" Retención en la fuente "],
+        RetencionIVA:obj[" Retencion IVA "] === undefined ? 0 :obj[" Retencion IVA "],
+        Amortizacion:obj.Amortizacion === undefined ? 0 :obj.Amortizacion,
+        ProntoPago:obj["Pronto Pago"] === undefined ? 0 :obj["Pronto Pago"],
+        RetencionxGarantia:obj["Retencion x Garantia"] === undefined ? 0 :obj["Retencion x Garantia"],
+        RetincionICA:obj["Retincion ICA"] === undefined ? 0 : obj["Retincion ICA"],
+        TotalaPagar:obj[" Total a Pagar "] === undefined ? 0 :obj[" Total a Pagar "],
+        SaldoDespuesdePagooAbono:obj["Saldo Despues de Pago o Abono"] === undefined ?0 :obj["Saldo Despues de Pago o Abono"],
+        Fechadepago:obj["Fecha de Pago"] === undefined ? 0 :obj["Fecha de Pago"],
+        Estatus:obj.Estatus === undefined ? 0 :obj.Estatus,
+  
+      })
+    }catch (err) {
+      console.log(err)
+    }
+  })
+  }
+
   // Mostrar Datos
   useEffect(() => {
-    const E = query(collection(db, 'MaestroHistoricOE') )
+    const E = query(collection(db, 'MaestroHistoricOE'),orderBy("Seudonimo", "asc" ) )
     const q = query(collection(db, 'MaestroHistoricO'),orderBy("Seudonimo", "asc" ))
+    const Fa = query(collection(db, 'FACTURACION'),orderBy("Num", "asc" ))
     onSnapshot(E, (querySnapshot) => {
       setDatosMaestroE(querySnapshot.docs.map(doc => ({
         id: doc.id,
@@ -803,12 +839,41 @@ export const DatosProvider = ({ children }) => {
       
       })))
     })
+
+    onSnapshot(Fa, (querySnapshot) => {
+      setFacturacion(querySnapshot.docs.map(doc => ({
+        id:doc.id,
+        Num:doc.data().Num,
+        NumeroIdentificacion:doc.data().NumeroIdentificacion,
+        TipoDocumento:doc.data().TipoDocumento,
+        Centrodecostos:doc.data().Centrodecostos,
+        Fecha:doc.data().Fecha,
+        FechaVencimiento:doc.data().FechaVencimiento,
+        Concepto:doc.data().Concepto,
+        ValorAntesdeIVA:doc.data().ValorAntesdeIVA,
+        IVA:doc.data().IVA,
+        TotalconIVA:doc.data().TotalconIVA,
+        RetencionFuente:doc.data().RetencionFuente,
+        RetencionIVA:doc.data().RetencionIVA,
+        Amortizacion:doc.data().Amortizacion,
+        ProntoPago:doc.data().ProntoPago,
+        RetencionxGarantia:doc.data().RetencionxGarantia,
+        RetincionICA:doc.data().RetincionICA,
+        TotalaPagar:doc.data().TotalaPagar,
+        SaldoDespuesdePagooAbono:doc.data().SaldoDespuesdePagooAbono,
+        Fechadepago:doc.data().Fechadepago,
+        Estatus:doc.data().Estatus,
+      })))
+    })
     
   },[])
 
 
   return (
     <DatosContext.Provider value={{
+      Facturacion,
+      Importarfactura,
+      IdF, setIdF,
       ImportarDatosME,
       ImportarDatosM,
       Idm, setIdm,
